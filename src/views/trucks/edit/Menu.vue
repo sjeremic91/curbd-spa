@@ -27,7 +27,7 @@
     </div>
 
     
-    <b-modal @hidden="$refs.mealForm.clearForm()" ref="mealModal" size="lg" hide-footer title="Meal Details">
+    <b-modal @hidden="$nextTick(() => $refs.mealForm.clearForm())" ref="mealModal" size="lg" hide-footer title="Meal Details">
       <app-meal-form :data="meal" ref="mealForm" @hide="hideModal()"></app-meal-form>
     </b-modal>
     <b-modal ref="condimentsModal" size="lg" hide-footer title="Meal Condiments">

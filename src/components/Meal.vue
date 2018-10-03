@@ -4,7 +4,7 @@
       <div class="align-self-center">
         {{meal.title}}
       </div>
-      <div >
+      <div class="ml-1 d-flex flex-nowrap align-self-start">
       
       <b-button size="sm" class="mr-1" @click="$emit('update')" variant="outline-warning">
         <i class="fa fa-edit"></i>

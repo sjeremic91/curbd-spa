@@ -1,5 +1,5 @@
 <template>
-  <b-card class="pb-3 h-100" >
+  <b-card class="h-100" >
     <div slot="header" class="d-flex justify-content-between">
       <strong class="align-self-center">
         #{{truck.name}}
@@ -7,7 +7,7 @@
           <i class="fa fa-map-marker text-danger"></i>
         </a>
       </strong> 
-      <div>
+      <div class="d-flex flex-nowrap align-self-start">
         <b-button size="sm" class="mr-2" variant="warning" @click="$emit('edit-truck', truck)">
           <i class="fa fa-edit"></i>
         </b-button>
@@ -19,28 +19,26 @@
         </b-button>
       </div>
     </div>
-    <div class="d-flex">
-    
-      <img :src="getImage('/trucks/'+truck.featured_image_path)" class="mr-3 w-25 align-self-start img-thumbnail">
-    
-      <p class="card-text">
-      <i class="fa fa-truck"></i> <strong> Description:</strong>
-         {{truck.description}} 
-      </p>
-    </div>
-    <div>
-      <small v-if="truck.stripe_acc" class="text-muted">
-        Connected to Stripe
-        <a href="#" @click.prevent="disconnect">
-          <b-badge variant="primary">Disconnect</b-badge>
-          </a>
-      </small>
-      <small v-else class="text-muted">
-        Connect to 
-        <a href="#" @click.prevent="connect">
-          <b-badge variant="primary">Stripe</b-badge>
-          </a>
-      </small>
+
+    <div class="d-flex flex-column justify-content-between">
+      <div class="d-flex">
+
+        <img :src="getImage('/trucks/'+truck.featured_image_path)" class="mr-3 w-25 align-self-start img-thumbnail">
+
+        <p class="card-text">
+        <i class="fa fa-truck"></i> <strong> Description:</strong>
+        {{truck.description}} 
+        </p>
+      </div>
+      <div class="mt-2">
+        <a v-if="truck.stripe_acc" href="#" @click.prevent="disconnect">
+          <b-badge variant="danger">Disconnect from Stripe</b-badge>
+        </a>
+        <a v-else href="#" @click.prevent="connect">
+          <b-badge variant="warning">Connect to Stripe</b-badge>
+        </a>
+      </div>
+
     </div>
   </b-card>
 </template>

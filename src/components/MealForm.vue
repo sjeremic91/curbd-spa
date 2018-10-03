@@ -11,12 +11,12 @@
       </b-form-select>
     </b-form-group>
     <b-form-group horizontal label="Meal Image" label-for="meal-image">
-      <b-form-file id="meal-image" accept="image/*" v-model="mealImg" placeholder="Choose a file..."></b-form-file>
+      <b-form-file ref="fileinput" id="meal-image" accept="image/*" v-model="mealImg" placeholder="Choose a file..."></b-form-file>
     </b-form-group>
     <b-form-group horizontal label="Description" :invalid-feedback="errors.first('description')" laber-for="meal-description">
       <b-textarea id="meal-description" name="description" v-validate="'required'" :state="getState('description')"  v-model="meal.description" rows="4"></b-textarea>
     </b-form-group>
-    <b-form-group horizontal label="Price" :invalid-feedback="errors.first('price')" label-for="meal-price">
+    <b-form-group horizontal label="Price" :state="getState('price')" :invalid-feedback="errors.first('price')" label-for="meal-price">
       <b-input-group prepend="$">
         <b-input id="meal-price" name="price" v-validate="'required|decimal:2'" v-model="meal.price" :state="getState('price')"></b-input>
       </b-input-group>
@@ -82,11 +82,13 @@ export default {
   },
   watch: {
     data(data) {
+      this.clearForm()
       this.meal = data ? _.clone(data) : initMeal(this.truck.id)
     }
   },
   methods: {
     clearForm() {
+      this.$refs.fileinput.reset()
       this.mealImg = null;
       this.meal = initMeal(this.truck.id)
       this.$validator.reset()

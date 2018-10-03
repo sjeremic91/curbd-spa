@@ -4,7 +4,7 @@
       <b-container fluid >
         <div class="d-flex pt-4 mb-3 justify-content-between">
           <h4>{{title}}</h4>
-          <b-button @click="saveTruck()" variant="success">Save All</b-button>
+          <b-button class="align-self-start" @click="saveTruck()" variant="success">Save All</b-button>
         </div>
       <b-nav v-if="!isNew" justified tabs>
         <b-nav-item class="text-md-left" :to="{name: 'truck-general'}"><i class="fa fa-info-circle"></i> <span class="d-none d-md-inline"> General</span></b-nav-item>
