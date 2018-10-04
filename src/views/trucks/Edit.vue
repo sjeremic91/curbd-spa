@@ -19,7 +19,9 @@
         <b-nav-item class="text-md-left" disabled><i class="fa fa-coffee"></i> <span class="d-none d-md-inline"> Menu</span></b-nav-item>
       </b-nav>
       <div class="mt-4">
-        <router-view></router-view>
+        <transition name="slide-fade" mode="out-in">
+          <router-view></router-view>
+        </transition>
       </div>
       </b-container>
     </div>

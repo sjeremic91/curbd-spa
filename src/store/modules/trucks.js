@@ -14,7 +14,7 @@ function initTruck() {
     max_items_per_order: 5,
     state: '',
     latitude: 40.7128,
-    longitude: 74.0060,
+    longitude: -74.0060,
     categories: [],
     mealCategories: [],
     shifts: [],
