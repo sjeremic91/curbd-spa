@@ -1,5 +1,5 @@
 <template>
-  <b-card class="h-100" >
+  <b-card no-body class="h-100" >
     <div slot="header" class="d-flex justify-content-between">
       <strong class="align-self-center">
         #{{truck.name}}
@@ -20,8 +20,8 @@
       </div>
     </div>
 
-    <div class="d-flex flex-column justify-content-between">
-      <div class="d-flex">
+    <b-card-body class="d-flex flex-column justify-content-between">
+      <div class="d-flex mb-2">
 
         <img :src="getImage('/trucks/'+truck.featured_image_path)" class="mr-3 w-25 align-self-start img-thumbnail">
 
@@ -30,7 +30,7 @@
         {{truck.description}} 
         </p>
       </div>
-      <div class="mt-2">
+      <div class="mt-auto">
         <a v-if="truck.stripe_acc" href="#" @click.prevent="disconnect">
           <b-badge variant="danger">Disconnect from Stripe</b-badge>
         </a>
@@ -39,13 +39,15 @@
         </a>
       </div>
 
-    </div>
+    </b-card-body>
   </b-card>
 </template>
 
 <script>
 import {mapActions} from 'vuex'
 import axios from 'axios'
+import {STRIPE_CLIENT_ID, STRIPE_REDIRECT_URI} from '@/config/env'
+
 export default {
   props: {
     truck: {
@@ -58,7 +60,7 @@ export default {
       return `http://maps.google.com/maps?q=${this.truck.latitude},${this.truck.longitude}`;
     },
     stripeUrl() {
-      return 'https://dashboard.stripe.com/oauth/authorize?response_type=code&client_id=ca_DiEuWG3LP5IskJR5W37loj8WwYbdbSzs&scope=read_write&redirect_uri=http://localhost:8081/dashboard/trucks' 
+      return `https://dashboard.stripe.com/oauth/authorize?response_type=code&client_id=${STRIPE_CLIENT_ID}&scope=read_write&redirect_uri=${STRIPE_REDIRECT_URI}` 
     },
   },
   methods: {

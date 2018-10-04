@@ -1,7 +1,10 @@
 import axios from 'axios'
 import swal from 'sweetalert'
+import {API_URL} from '@/config/env'
 
-axios.defaults.baseURL = 'http://192.168.0.29/api-curbd/public/'
+
+console.log(API_URL)
+axios.defaults.baseURL = API_URL
 
 const token = localStorage.getItem('token')
 

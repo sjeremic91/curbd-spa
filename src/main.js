@@ -4,7 +4,7 @@ import BootstrapVue from 'bootstrap-vue'
 import VeeValidate from 'vee-validate';
 import moment from 'moment'
 import * as VueGoogleMaps from 'vue2-google-maps'
-
+import {IMAGE_ROOT, GOOGLE_MAP_KEY} from '@/config/env'
 
 import router from './router'
 import store from '@/store'
@@ -15,7 +15,6 @@ Vue.use(VeeValidate, { fieldsBagName: 'veeFields' });
 
 
 //import 'bootstrap-vue/dist/bootstrap-vue.css';
-const IMAGE_ROOT = 'http://192.168.0.29/api-curbd/public/images'
 
 Vue.config.productionTip = false
 
@@ -28,7 +27,7 @@ Vue.use(BootstrapVue);
 
 Vue.use(VueGoogleMaps, {
   load: {
-    key: 'AIzaSyAvSMb7TLdpqKiYkv4vlZFEznxZcOY7si4',
+    key: GOOGLE_MAP_KEY,
     libraries: 'places', // This is required if you use the Autocomplete plugin
     // OR: libraries: 'places,drawing'
     // OR: libraries: 'places,drawing,visualization'
