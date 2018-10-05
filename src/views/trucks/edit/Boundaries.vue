@@ -11,7 +11,7 @@
               <b-input-group-text slot="append">
                 minutes
               </b-input-group-text> 
-              <b-form-input id="condition1" type="number" v-model="truckDeliveryTime"></b-form-input>
+              <b-form-input id="condition1" type="time" v-model="truckDeliveryTime"></b-form-input>
             </b-input-group>
           </b-form-group>
           <b-form-group  class="d-none" horizontal  breakpoint="md"  label="Condition 2" label-for="condition2" description="Maximum items per order">
