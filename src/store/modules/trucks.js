@@ -15,6 +15,7 @@ function initTruck() {
     state: '',
     latitude: 40.7128,
     longitude: -74.0060,
+    time_zone: 'America/New_York',
     categories: [],
     mealCategories: [],
     shifts: [],
