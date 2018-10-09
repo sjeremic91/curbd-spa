@@ -51,6 +51,8 @@
 
 <script>
 import {mapGetters} from 'vuex'
+import {GOOGLE_MAP_KEY} from '@/config/env'
+import axios from 'axios'
 
 export default {
   computed: {
@@ -79,6 +81,10 @@ export default {
       get() { return this.$store.state.trucks.singleTruck.longitude },
       set(value) { return this.$store.commit('trucks/setTruckProperty', {field: 'longitude', value}) }
     },
+    truckTimeZone: {
+      get() { return this.$store.state.trucks.singleTruck.time_zone },
+      set(value) { return this.$store.commit('trucks/setTruckProperty', {field: 'time_zone', value}) }
+    },
     
     position() {
       if (this.truck) 
@@ -92,10 +98,18 @@ export default {
     }
   },
   methods: {
-    setPosition(p) {
-      console.log(p)
+    async setPosition(p) {
+      let timestamp = new Date().getTime()/1000;
       this.truckLatitude = p.lat();
       this.truckLongitude = p.lng();
+      //const response = await axios.get( "https://maps.googleapis.com/maps/api/timezone/json?location="+p.lat()+","+p.lng()+"&timestamp="+timestamp+"&key="+GOOGLE_MAP_KEY, {headers: {common: {'Authorization': undefined}}})
+
+      let token = axios.defaults.headers.common['Authorization']
+      delete axios.defaults.headers.common['Authorization']
+      const {data} = await axios.get( "https://maps.googleapis.com/maps/api/timezone/json?location="+p.lat()+","+p.lng()+"&timestamp="+timestamp+"&key="+GOOGLE_MAP_KEY);
+      //const {data} = await axios.get("https://maps.googleapis.com/maps/api/timezone/json?location=38.908133,-77.047119&timestamp=1458000000&key=AIzaSyDU1NtxHyVJ8MStzrKJUs2aAFTUu7491BQ");
+      axios.defaults.headers.common['Authorization'] = token;
+      this.truckTimeZone = data.timeZoneId
     }
   }
 }
