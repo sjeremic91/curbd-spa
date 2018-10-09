@@ -20,5 +20,5 @@ yarn-error.log*
 *.sln
 *.sw*
 
-config/env.js
+/config/env.js
 htaccess
