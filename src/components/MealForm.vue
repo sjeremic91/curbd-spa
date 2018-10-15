@@ -29,7 +29,6 @@
     </b-form-group>
     <b-btn class="float-right" variant="default" @click="clearForm();$emit('hide')">Close</b-btn>
     <b-btn class="float-right mr-2" :disabled="saveDisabled" variant="primary" @click="saveMeal">Save</b-btn>
-
   </b-form>
 </template>
 
@@ -37,21 +36,6 @@
 import ErrorStateMixin from '@/mixins/ErrorStateMixin'
 import {mapGetters} from 'vuex'
 
-function initMeal(truck_id) {
-  return {
-    title: '',
-    description: '',
-    price: null,
-    image_path: null,
-    meal_cat_id: null,
-    description: '',
-    gluten_free: false,
-    extra_hot: false,
-    dairy_free: false,
-    vegeterian: false,
-    truck_id: truck_id
-  }
-}
 
 export default {
   mixins: [ErrorStateMixin],
@@ -63,7 +47,7 @@ export default {
   data() {
     return {
       loading: false,
-      meal: this.data ? _.clone(this.data) : initMeal(),
+      meal: _.clone(this.data),
       mealImg : null
     }
   },
@@ -80,18 +64,18 @@ export default {
       set(val) { this.$store.commit('trucks/setSelectedMealCategoryId', val)}
     },
   },
-  watch: {
-    data(data) {
-      this.clearForm()
-      this.meal = data ? _.clone(data) : initMeal(this.truck.id)
-    }
+  created() {
+    console.log('created')
+    this.clearForm()
+
   },
   methods: {
     clearForm() {
+      this.$nextTick(() => {
       this.$refs.fileinput.reset()
       this.mealImg = null;
-      this.meal = initMeal(this.truck.id)
       this.$validator.reset()
+      })
     },
     async saveMeal() {
       if (await this.$validator.validateAll()) {

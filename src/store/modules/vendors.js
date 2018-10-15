@@ -1,13 +1,16 @@
 import axios from 'axios'
+import {smartSearch} from '@/utils'
 
 export default {
   namespaced: true,
   state: {
     vendors: [],
+    filter: ''
   },
   mutations: {
     removeVendor: (state, id) => state.vendors = state.vendors.filter((vendor) => vendor.id != id),
     setVendors : (state, vendors) => state.vendors = vendors,
+    setFilter : (state, filter) => state.filter = filter,
     validateVendor: (state, vendor) => state.vendors.find((item) => item.id == vendor.id).user.verified = true
   },
   actions: {
@@ -38,6 +41,11 @@ export default {
     getVendor: (state) => (id) => { 
       console.log(state.vendors)
       return state.vendors.find((vendor) => vendor.id == id)
+    },
+    filteredVendors: (state) => {
+      return state.vendors.filter((vendor) => smartSearch(vendor.company_name, state.filter) || smartSearch(vendor.email, state.filter))
+
     }
   }
+
 }

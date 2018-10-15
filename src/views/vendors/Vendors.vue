@@ -6,6 +6,14 @@
       <b-button to="/dashboard/vendors/create" variant="primary">Create Vendor</b-button>
       </div>
       <p class="card-text">Starting point for creating new vendors and manage existing.</p>
+      <b-row>
+        <b-col sm="6" offset-sm="6" md="4" offset-md="8" lg="2" offset-lg="10">
+          <b-form-group>
+            <b-form-input placeholder="Search" v-model="filter"></b-form-input>
+          </b-form-group>
+        </b-col>
+      </b-row>
+
       <b-list-group>
         <b-list-group-item :key="vendor.id" v-for="vendor in vendors">
           <b-row>
@@ -36,10 +44,16 @@
 
 <script>
 
-import {mapState} from 'vuex'
+import {mapState, mapGetters} from 'vuex'
 
 export default {
-  computed : mapState({vendors : state => state.vendors.vendors}),
+  computed : {
+    ...mapGetters({vendors : 'vendors/filteredVendors', }),
+    filter: {
+      get() {return this.$store.state.vendors.filter},
+      set(val) {this.$store.commit('vendors/setFilter', val)}
+    },
+  },
   async beforeRouteEnter(to, from, next) {
     await next(async vm => { 
       await vm.$store.dispatch('vendors/fetchVendors');

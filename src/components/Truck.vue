@@ -23,7 +23,7 @@
     <b-card-body class="d-flex flex-column justify-content-between">
       <div class="d-flex mb-2">
 
-        <img :src="getImage('/trucks/'+truck.featured_image_path)" class="mr-3 w-25 align-self-start img-thumbnail">
+        <img :src="getImage('/trucks/'+imgName)" class="mr-3 w-25 align-self-start img-thumbnail">
 
         <p class="card-text">
         <i class="fa fa-truck"></i> <strong> Description:</strong>
@@ -58,6 +58,9 @@ export default {
   computed: {
     mapLink() {
       return `http://maps.google.com/maps?q=${this.truck.latitude},${this.truck.longitude}`;
+    },
+    imgName() {
+      return this.truck.featured_image_path ? this.truck.featured_image_path : 'noimagefound.jpg'
     },
     stripeUrl() {
       return `https://dashboard.stripe.com/oauth/authorize?response_type=code&client_id=${STRIPE_CLIENT_ID}&scope=read_write&redirect_uri=${STRIPE_REDIRECT_URI}` 

@@ -5,6 +5,7 @@ function initTruck() {
     email: '',
     name: '',
     description: '',
+    failed_order_message: 'Sorry we are not able to take your order at this moment. Hope to see you tommorow',
     tax: '',
     address: '',
     city: '',
@@ -45,6 +46,9 @@ export default {
       state.singleTruck.mealCategories.forEach((category) => {
         category.meals = category.meals.filter((meal) => meal.id !== mealId)
       })
+    },
+    removeTruck(state, truckId) {
+      state.trucks = state.trucks.filter((truck) => truck.id !== truckId)
     },
     setTruckVendorId(state, id) {
       state.singleTruck.vendor_id = id;
@@ -94,6 +98,12 @@ export default {
       //console.log(categories)
       //state.singleTruck.categories = state.categories.filter((category) => !!categories.find( (id) => id == category.id))
     },
+    updateMealCategoryName(state, {name, id}) {
+      state.singleTruck.mealCategories.find((cat) => cat.id == id).name = name
+    },
+    removeMealCategory(state, id) {
+      state.singleTruck.mealCategories = state.singleTruck.mealCategories.filter((category) => category.id !== id)
+    },
     setSelectedMealCategoryId: (state, val) => state.selectedMealCategoryId = val,
   },
   actions: {
@@ -135,6 +145,11 @@ export default {
       commit('togglePublish', truck);
       const {data} = await axios.get('/api/trucks/publish/'+truck.id)
     },
+    async deleteTruck({commit, state}, truck) {
+      commit('removeTruck', truck.id)
+      const {data} = await axios.delete('/api/trucks/'+truck.id);
+      swal(data.message)
+    },
     async verify({commit, rootGetters}, truck) {
       commit('verifyUser', truck)
       const {data} = await axios.post('/api/user/'+truck.user_id+'/verify')
@@ -150,6 +165,28 @@ export default {
         name: name
       })
       swal(data.message)
+    },
+    async updateMealCategory({commit, state}, {id, name}) {
+      try {
+      const {data} = await axios.put('/api/mealCats/'+id, {
+        truck_id: state.singleTruck.id,
+        name: name
+      })
+      commit('updateMealCategoryName', {id, name});
+      swal(data.message)
+      } catch (e) {
+
+        console.error(e)
+      }
+    },
+    async deleteMealCategory({commit, state}, id) {
+      try {
+      const {data} = await axios.delete('/api/mealCats/'+id)
+      commit('removeMealCategory', id);
+      swal(data.message)
+      } catch (e) {
+        console.error(e)
+      }
     },
     async deleteMeal({commit, state}, meal) {
       commit('removeMeal', meal.id)

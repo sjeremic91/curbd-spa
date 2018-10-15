@@ -2,7 +2,11 @@
   <div class="meal-cat-wrapper">
     <div class="meal-cat-content mb-3">
       <b-nav pills class="flex-nowrap" v-if="truck.mealCategories.length">
-        <b-nav-item @click="selectedCategoryId=category.id" :active="selectedCategoryId==category.id"  v-for="category in truck.mealCategories" :key="category.id">{{category.name}}</b-nav-item>
+        <b-nav-item @click="selectedCategoryId=category.id" :active="selectedCategoryId==category.id"  v-for="category in truck.mealCategories" :key="category.id">
+          <span>
+          {{category.name}}
+          </span>
+        </b-nav-item>
       </b-nav>
     </div>
     <div class="d-sm-none meal-cat-shadow-left">

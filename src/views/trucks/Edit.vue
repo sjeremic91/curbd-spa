@@ -1,10 +1,14 @@
 <template>
     <div class="edit-card" >
-
+      <b-breadcrumb :items="breadcrumbItems"></b-breadcrumb>
       <b-container fluid >
         <div class="d-flex pt-4 mb-3 justify-content-between">
           <h4>{{title}}</h4>
-          <b-button class="align-self-start" @click="saveTruck()" variant="success">Save All</b-button>
+          <div class="align-self-start">
+          <b-button class="mr-3" @click="saveTruck()" variant="success">Save All</b-button>
+          <b-button v-if="!isNew" @click="deleteTruck()" variant="danger"><i class="fa fa-trash"></i> Delete</b-button>
+          
+          </div>
         </div>
       <b-nav v-if="!isNew" justified tabs>
         <b-nav-item class="text-md-left" :to="{name: 'truck-general'}"><i class="fa fa-info-circle"></i> <span class="d-none d-md-inline"> General</span></b-nav-item>
@@ -25,7 +29,6 @@
       </div>
       </b-container>
     </div>
-  </div>
 </template>
 
 <script>
@@ -54,8 +57,12 @@ export default {
     await next( async vm => {
       console.log('poceo');
       if (!vm.isNew)  {
+        try {
         await vm.$store.dispatch('trucks/fetchSingle', to.params.id);
         vm.$store.commit('trucks/setSelectedMealCategoryId', vm.truck.mealCategories.length ? vm.truck.mealCategories[0].id : null)
+        } catch (e) {
+          vm.$router.push({name: 'trucks'})
+        }
       } else {
         vm.$store.dispatch('trucks/initSingle')
       }
@@ -75,6 +82,10 @@ export default {
   methods: {
     async saveTruck() {
       await this.$store.dispatch('trucks/saveTruck')
+      this.$router.push({name: 'trucks'})
+    },
+    async deleteTruck() {
+      await this.$store.dispatch('trucks/deleteTruck', this.truck)
       this.$router.push({name: 'trucks'})
     }
   }

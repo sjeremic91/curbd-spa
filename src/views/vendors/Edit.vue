@@ -13,7 +13,7 @@
             <b-form-group horizontal label="Company Name" :invalid-feedback="errors.first('company name')">
               <b-form-input v-validate="'required'" name="company name" :state="getState('company name')" v-model="vendor.company_name" placeholder="Company Name"></b-form-input>
             </b-form-group>
-            <b-form-group horizontal label="Status">
+            <b-form-group v-show="false" horizontal label="Status">
               <b-form-checkbox v-model="vendor.status">Is Active</b-form-checkbox>
             </b-form-group>
             <hr>
@@ -49,8 +49,8 @@
                 <b-form-input type="number" name="fee" v-validate="'required'" :state="getState('fee')" v-model="vendor.fee" placeholder="Fee"></b-form-input>
               </b-input-group>
             </b-form-group>
-            <b-form-group horizontal>
-              <b-form-checkbox>Inform and send credentials to Vendor</b-form-checkbox>
+            <b-form-group v-if="!vendor.id" horizontal>
+              <b-form-checkbox v-model="vendor.inform_vendor">Inform and send credentials to Vendor</b-form-checkbox>
             </b-form-group>
             <b-form-group horizontal>
               <b-button class="mr-3" type="submit" :disabled="submitDisabled" variant="success" v-html="successButtonContent">
@@ -85,7 +85,7 @@ export default {
         first_name: '',
         last_name: '',
         company_name: '',
-        status: false,
+        status: true,
         email: '',
         password: '',
         phone: '',
@@ -93,6 +93,7 @@ export default {
         city: '',
         zip: '',
         state: '',
+        inform_vendor: false,
         fee: null
       },
       loading: false

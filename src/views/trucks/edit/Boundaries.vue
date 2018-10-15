@@ -4,7 +4,7 @@
 
         <b-form>
           <b-form-group  horizontal  breakpoint="md"  label="Order Failed" label-for="unsuccessfull-order" description="Unable to handle order message">
-            <b-form-textarea id="unsuccessfull-order" value="Sorry we are not able to take your order at this moment. Hope to see you tommorow" rows="3"></b-form-textarea>
+            <b-form-textarea id="unsuccessfull-order" v-model="truckFailedOrderMessage" placeholder="Please enter the message for failed orders..." rows="3"></b-form-textarea>
           </b-form-group>
           <b-form-group  horizontal  breakpoint="md"  label="Condition 1" label-for="condition1" description="Minimum order fulfilment time">
             <b-input-group>
@@ -39,6 +39,10 @@ export default {
     truckDeliveryTime: {
       get() { return this.$store.state.trucks.singleTruck.min_delivery_time },
       set(value) { return this.$store.commit('trucks/setTruckProperty', {field: 'min_delivery_time', value}) }
+    },
+    truckFailedOrderMessage: {
+      get() { return this.$store.state.trucks.singleTruck.failed_order_message },
+      set(value) { return this.$store.commit('trucks/setTruckProperty', {field: 'failed_order_message', value}) }
     },
     truckMaximumItems: {
       get() { return this.$store.state.trucks.singleTruck.max_items_per_order },
