@@ -1,7 +1,7 @@
 <template>
   <b-row  class="justify-content-md-center">
     <b-col lg="8">
-      <b-form>
+      <b-form id="v-step-4">
         <b-form-group  horizontal  breakpoint="md"   :label="'Email ' + star " label-for="email" >
           <b-form-input :disabled="!isNewTruck" id="email" v-model="truckEmail"></b-form-input>
         </b-form-group>
@@ -46,11 +46,14 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from 'vuex'
+import {mapGetters, mapActions, mapMutations} from 'vuex'
 
 
 export default {
 
+  created() {
+    this.setStepIndex(4);
+  },
   computed: {
     ...mapGetters({isNewTruck: 'trucks/isNew', truck: 'trucks/singleTruck', categories: 'trucks/categories'}),
     truckCategories: {
@@ -90,7 +93,7 @@ export default {
     }
   },
   methods: {
-
+    ...mapMutations(['setStepIndex']),
     updatePassword() {
       this.$store.dispatch('trucks/updatePassword', this.newPassword)
     },

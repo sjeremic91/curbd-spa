@@ -1,8 +1,8 @@
 <template>
-  <b-navbar fixed="top" toggleable="md" type="dark" variant="primary">
+  <b-navbar  fixed="top" toggleable="md" type="dark" variant="primary">
 
-    <div>
-      <b-navbar-brand @click="toggleSidebar()" href="#"><img src="../assets/img/logo.png" alt="Logo"></b-navbar-brand>
+    <div id="v-step-0" >
+      <b-navbar-brand  @click="toggleSidebar()" href="#"><img src="../assets/img/logo.png" alt="Logo"></b-navbar-brand>
 
     </div>
 
@@ -35,7 +35,7 @@ import {mapMutations, mapActions, mapState} from 'vuex';
 
 export default {
   computed: {
-    ...mapState({user: (state) => state.auth.user, truck: (state) => state.trucks.singleTruck}),
+    ...mapState({user: (state) => state.auth.user, truck: (state) => state.trucks.singleTruck, stepIndex : (state)=> state.stepIndex}),
   },
   methods: {
     ...mapMutations(['toggleSidebar']),

@@ -4,7 +4,7 @@
     
     <h4>Trucks</h4>
     <b-form-group v-if="!connectingTruck">
-      <b-button to="/dashboard/trucks/create/general" variant="primary">Add Truck</b-button>   
+      <b-button id="v-step-3" @click="addTruck" to="" variant="primary">Add Truck</b-button>   
     </b-form-group>
     </div>
 
@@ -20,13 +20,12 @@
 
 <script>
 import AppTruck from '@/components/Truck'
-import {mapGetters, mapActions} from 'vuex'
+import {mapGetters, mapMutations, mapActions} from 'vuex'
 import axios from 'axios'
 
 export default {
   components: {AppTruck},
   computed: mapGetters({trucks: 'trucks/trucks'}),
-  methods: mapActions({fetch: 'trucks/fetch'}),
   data() {
     return {
       connectingTruck: false
@@ -45,6 +44,13 @@ export default {
     }
     await this.fetch();
   },
+  methods: {
+    ...mapActions({fetch: 'trucks/fetch'}),
+    ...mapMutations(['setStepIndex']),
+    addTruck() {
+      this.$router.push('/dashboard/trucks/create/general');
+    }
+  }
 
 
 }

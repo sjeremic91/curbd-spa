@@ -3,11 +3,11 @@
     <app-header></app-header>
     <div class="app-body">
 
-      <nav class="sidebar">
+      <nav class="sidebar" >
 
-        <b-nav vertical>
-          <b-nav-item v-if="$store.getters['auth/hasType']('vendor')" to="/dashboard/orders"> <i class="fa fa-fw fa-list"></i> Orders</b-nav-item>
-          <b-nav-item v-if="$store.getters['auth/hasType']('vendor')" to="/dashboard/trucks"> <i class="fa fa-fw fa-truck"></i> Trucks</b-nav-item>
+        <b-nav vertical >
+          <b-nav-item  v-if="$store.getters['auth/hasType']('vendor')" @click="setStepIndex(2)" to="/dashboard/orders"> <i class="fa fa-fw fa-list"></i> Orders</b-nav-item>
+          <b-nav-item  id="v-step-1" v-if="$store.getters['auth/hasType']('vendor')" @click="goToTrucks" > <i class="fa fa-fw fa-truck"></i> Trucks</b-nav-item>
           <b-nav-item v-if="$store.getters['auth/hasType']('admin')" to="/dashboard/vendors"> <i class="fa fa-fw fa-user"></i> Vendors</b-nav-item>
         </b-nav>
       </nav>
@@ -27,7 +27,7 @@
 <script>
 // @ is an alias to /src
 import AppHeader from '@/components/Header.vue'
-import {mapGetters} from 'vuex'
+import {mapGetters, mapState, mapMutations} from 'vuex'
 
 export default {
   name: 'dashboard',
@@ -35,9 +35,15 @@ export default {
     AppHeader
   },
   computed: {
+    ...mapState(['stepIndex']),
     ...mapGetters(['showSidebar', 'alertVariant', 'alertTimer', 'alertMessage']),
   },
   methods : {
+    ...mapMutations(['setStepIndex']),
+    goToTrucks() {
+      this.$router.push({'name': 'trucks'})
+      this.setStepIndex(3)
+    }
   }
 }
 </script>

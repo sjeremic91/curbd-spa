@@ -21,11 +21,14 @@ export default new Vuex.Store({
     showSidebar: false,
     alertTimer: 0,
     alertMessage: '',
-    alertVariant: 'success'
+    alertVariant: 'success',
+    startTutor: false,
+    stepIndex: null
   },
   mutations: {
     toggleSidebar(state) {
       state.showSidebar = !state.showSidebar
+      state.stepIndex = 1
     },
     hideSidebar(state) {
       state.showSidebar = false
@@ -34,6 +37,12 @@ export default new Vuex.Store({
       state.alertMessage = message
       state.alertVariant = variant
       state.alertTimer = 4
+    },
+    startTutor(state) {
+      state.startTutor = true
+    },
+    setStepIndex(state, index) {
+      state.stepIndex = index
     }
   },
   actions: {

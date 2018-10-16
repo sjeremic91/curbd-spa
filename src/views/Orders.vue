@@ -61,6 +61,7 @@ export default {
   },
   async created() {
     await this.$store.dispatch('orders/fetchOrders');
+    //this.$tours['myTour'].start()
     this.filteredOrders = this.orders;
 
   },
