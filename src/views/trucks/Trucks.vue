@@ -43,6 +43,7 @@ export default {
       this.connectingTruck = false
     }
     await this.fetch();
+    this.setStepIndex(3)
   },
   methods: {
     ...mapActions({fetch: 'trucks/fetch'}),

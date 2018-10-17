@@ -43,6 +43,11 @@ body {
   font-family: 'Montserrat', sans-serif;
 }
 
+.fixed-body {
+  position: fixed;
+  width: 100%;
+}
+
 .overflow-container {
   overflow: auto;
 }

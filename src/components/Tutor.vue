@@ -51,17 +51,23 @@ export default {
       buttons: true
     }).then((answer) => {
       if (answer) {
+        this.$router.push('/dashboard/orders');
         this.$store.commit('setStepIndex', 0);
-        
+
         this.showCurrentStep()
+        window.addEventListener('scroll', this.showCurrentStep);
       }
     })
   },
   methods: {
     showCurrentStep() {
       this.$nextTick(() => {
+        //document.querySelector('body').classList.add('fixed-body')
         let viewportwidth = window.innerWidth
-        let viewportheight = window.innerHeight
+        //let viewportheight = window.innerHeight
+        var body = document.body, html = document.documentElement;
+        let viewportheight = Math.max( body.scrollHeight, body.offsetHeight,
+                       html.clientHeight, html.scrollHeight, html.offsetHeight );
 
         let target = document.getElementById(this.steps[this.stepIndex].target);
         let pos = offset(target)
@@ -73,7 +79,7 @@ export default {
 
         this.overlayRightWidth = viewportwidth - (pos.left+pos.width)+'px';
         this.overlayRightHeight = (viewportheight -pos.top) +'px';
-
+        
         this.overlayTopWidth = viewportwidth - pos.left+'px';
         this.overlayTopHeight = pos.top+'px';
         //console.log(target.offsetTop, target.offsetLeft, target.clientHeight, target.clientWidth);
@@ -87,7 +93,7 @@ export default {
 <style>
 
 .tutor-overlay-left {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   background: black;
@@ -96,7 +102,7 @@ export default {
 }
 
 .tutor-overlay-bottom {
-  position: fixed;
+  position: absolute;
   left: 0;
   bottom: 0;
   background: black;
@@ -105,7 +111,7 @@ export default {
 }
 
 .tutor-overlay-right {
-  position: fixed;
+  position: absolute;
   right: 0;
   bottom: 0;
   background: black;
@@ -114,7 +120,7 @@ export default {
 }
 
 .tutor-overlay-top {
-  position: fixed;
+  position: absolute;
   right: 0;
   top: 0;
   background: black;

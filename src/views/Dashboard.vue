@@ -42,7 +42,7 @@ export default {
     ...mapMutations(['setStepIndex']),
     goToTrucks() {
       this.$router.push({'name': 'trucks'})
-      this.setStepIndex(3)
+      //this.setStepIndex(3)
     }
   }
 }
