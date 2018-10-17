@@ -1,4 +1,5 @@
 import axios from 'axios'
+import moment from 'moment'
 
 function initTruck() {
   return {
@@ -34,7 +35,11 @@ export default {
   },
   mutations: {
     setTrucks(state, trucks) {
-      state.trucks = trucks;
+      state.trucks = trucks.map( (truck) => {
+        let minutes = truck.min_delivery_time
+        truck.min_delivery_time = moment.duration(minutes).asMinutes() 
+        return truck;
+      });
     },
     setTruckProperty(state, payload) {
       state.singleTruck[payload.field] = payload.value
@@ -117,7 +122,7 @@ export default {
     async saveTruck({state, commit, rootState}) {
       let response = null;
       commit('setTruckVendorId', rootState.auth.user.id)
-      state.singleTruck.min_delivery_time = state.singleTruck.min_delivery_time/60+":"+state.singleTruck.min_delivery_time%60+':00';
+      state.singleTruck.min_delivery_time = Math.floor(state.singleTruck.min_delivery_time/60)+":"+state.singleTruck.min_delivery_time%60+':00';
       if (state.singleTruck.id) {
         response = (await axios.put('/api/trucks/'+state.singleTruck.id, state.singleTruck)).data
       } else {
@@ -139,6 +144,9 @@ export default {
       if (truck === undefined) 
         truck = null;*/
       const {data} = await axios.get('/api/trucks/'+id)
+        let minutes = data.data.min_delivery_time
+      //console.log(minutes)
+        data.data.min_delivery_time = moment.duration(minutes).asMinutes() 
       commit('setSingleTruck', data.data);
       //commit('setSelectedMealCategory', data.data.mealCategories.length ? data.data.mealCategories[0] : null)
     },
