@@ -117,6 +117,7 @@ export default {
     async saveTruck({state, commit, rootState}) {
       let response = null;
       commit('setTruckVendorId', rootState.auth.user.id)
+      state.singleTruck.min_delivery_time = state.singleTruck.min_delivery_time/60+":"+state.singleTruck.min_delivery_time%60+':00';
       if (state.singleTruck.id) {
         response = (await axios.put('/api/trucks/'+state.singleTruck.id, state.singleTruck)).data
       } else {
