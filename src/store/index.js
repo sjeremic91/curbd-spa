@@ -5,6 +5,7 @@ import orders from './modules/orders'
 import trucks from './modules/trucks'
 import meal from './modules/meal'
 import vendors from './modules/vendors'
+import tutor from './modules/tutor'
 
 Vue.use(Vuex)
 
@@ -15,20 +16,18 @@ export default new Vuex.Store({
     orders,
     trucks,
     meal,
-    vendors
+    vendors, 
+    tutor
   },
   state: {
     showSidebar: false,
     alertTimer: 0,
     alertMessage: '',
     alertVariant: 'success',
-    startTutor: false,
-    stepIndex: null
   },
   mutations: {
     toggleSidebar(state) {
       state.showSidebar = !state.showSidebar
-      state.stepIndex = 1
     },
     hideSidebar(state) {
       state.showSidebar = false
@@ -38,15 +37,12 @@ export default new Vuex.Store({
       state.alertVariant = variant
       state.alertTimer = 4
     },
-    startTutor(state) {
-      state.startTutor = true
-    },
-    setStepIndex(state, index) {
-      state.stepIndex = index
-    }
   },
   actions: {
-
+    async toggleSidebar({commit, dispatch}) {
+      commit('toggleSidebar') 
+      await dispatch('goToStep', 'sidebar')
+    },
   },
   getters: {
     showSidebar(state) {

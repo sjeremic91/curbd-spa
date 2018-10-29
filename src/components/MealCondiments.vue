@@ -43,7 +43,7 @@
 
     <div key="list" v-else>
       <b-form-group  class="text-right">
-        <b-button variant="primary" @click="createNew=true">Add New</b-button>
+        <b-button variant="primary" id="btn-add-condiment" @click="createNew=true;$store.dispatch('nextStep')">Add New</b-button>
       </b-form-group>
     
       <b-list-group>

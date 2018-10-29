@@ -1,28 +1,28 @@
 <template>
-    <div class="edit-card" >
+    <div class="edit-card pb-5" >
       <b-breadcrumb :items="breadcrumbItems"></b-breadcrumb>
       <b-container fluid >
         <div class="d-flex pt-4 mb-3 justify-content-between">
           <h4>{{title}}</h4>
           <div class="align-self-start">
-          <b-button class="mr-3" @click="saveTruck()" variant="success">Save All</b-button>
+          <b-button class="mr-3" id="save-truck" @click="saveTruck()" variant="success">Save All</b-button>
           <b-button v-if="!isNew" @click="deleteTruck()" variant="danger"><i class="fa fa-trash"></i> Delete</b-button>
           
           </div>
         </div>
       <b-nav v-if="!isNew" justified tabs>
         <b-nav-item class="text-md-left" :to="{name: 'truck-general'}"><i class="fa fa-info-circle"></i> <span class="d-none d-md-inline"> General</span></b-nav-item>
-        <b-nav-item class="text-md-left" :to="{name: 'truck-boundaries'}"><i class="fa fa-minus-circle"></i> <span class="d-none d-md-inline"> Boundaries</span></b-nav-item>
+        <b-nav-item class="text-md-left"  :to="{name: 'truck-boundaries'}"><i class="fa fa-minus-circle"></i> <span class="d-none d-md-inline"> Boundaries</span></b-nav-item>
         <b-nav-item class="text-md-left" :to="{name: 'truck-location'}"><i class="fa fa-map"></i> <span class="d-none d-md-inline"> Location</span></b-nav-item>
-        <b-nav-item class="text-md-left" :to="{name: 'truck-menu'}"><i class="fa fa-coffee"></i> <span class="d-none d-md-inline"> Menu</span></b-nav-item>
+        <b-nav-item class="text-md-left" id="step-menu" :to="{name: 'truck-menu'}"><i class="fa fa-coffee"></i> <span class="d-none d-md-inline"> Menu</span></b-nav-item>
       </b-nav>
       <b-nav v-else justified tabs>
         <b-nav-item class="text-md-left" :to="{name: 'create-truck-general'}"><i class="fa fa-info-circle"></i> <span class="d-none d-md-inline"> General</span></b-nav-item>
-        <b-nav-item class="text-md-left" :to="{name: 'create-truck-boundaries'}"><i class="fa fa-minus-circle"></i> <span class="d-none d-md-inline"> Boundaries</span></b-nav-item>
-        <b-nav-item class="text-md-left" :to="{name: 'create-truck-location'}"><i class="fa fa-map"></i> <span class="d-none d-md-inline"> Location</span></b-nav-item>
+        <b-nav-item class="text-md-left" id="step-boundaries" :to="{name: 'create-truck-boundaries'}"><i class="fa fa-minus-circle"></i> <span class="d-none d-md-inline"> Boundaries</span></b-nav-item>
+        <b-nav-item class="text-md-left" id="step-location" :to="{name: 'create-truck-location'}"><i class="fa fa-map"></i> <span class="d-none d-md-inline"> Location</span></b-nav-item>
         <b-nav-item class="text-md-left" disabled><i class="fa fa-coffee"></i> <span class="d-none d-md-inline"> Menu</span></b-nav-item>
       </b-nav>
-      <div class="mt-4">
+      <div class="mt-4 mb-5 pb-5">
         <transition name="slide-fade" mode="out-in">
           <router-view></router-view>
         </transition>
@@ -37,7 +37,7 @@ import {mapGetters, mapActions} from 'vuex'
 export default {
 
   computed : {
-    ...mapGetters({truck: 'trucks/singleTruck'}),
+    ...mapGetters({truck: 'trucks/singleTruck', currentStep: 'tutor/currentStep'}),
     isNew() {
       return this.$route.matched.some(m => m.name == 'create-truck')
     },
@@ -53,6 +53,7 @@ export default {
       ]
     }
   },
+
   async beforeRouteEnter(to, from, next) {
     await next( async vm => {
       console.log('poceo');

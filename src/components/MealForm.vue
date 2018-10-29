@@ -1,5 +1,5 @@
 <template>
-  <b-form>
+  <b-form id="form-meal">
     <b-form-group horizontal label="Name" :invalid-feedback="errors.first('name')" label-for="meal-name">
       <b-input id="meal-name" name="name" v-validate="'required'" :state="getState('name')" v-model="meal.title"></b-input>
     </b-form-group>
@@ -28,7 +28,7 @@
       <b-form-checkbox class="d-block" v-model="meal.vegeterian">Vegeterian</b-form-checkbox>
     </b-form-group>
     <b-btn class="float-right" variant="default" @click="clearForm();$emit('hide')">Close</b-btn>
-    <b-btn class="float-right mr-2" :disabled="saveDisabled" variant="primary" @click="saveMeal">Save</b-btn>
+    <b-btn id="btn-save-meal" class="float-right mr-2" :disabled="saveDisabled" variant="primary" @click="saveMeal">Save</b-btn>
   </b-form>
 </template>
 
@@ -63,11 +63,22 @@ export default {
       get() { return this.$store.state.trucks.selectedMealCategoryId},
       set(val) { this.$store.commit('trucks/setSelectedMealCategoryId', val)}
     },
+    validForm() {
+      return this.meal.title.length && this.meal.meal_cat_id && this.meal.description.length && this.meal.price
+    }
   },
   created() {
     console.log('created')
     this.clearForm()
 
+  },
+  watch: {
+    validForm(val) {
+      if (val)
+        this.$store.commit('tutor/enableContinue')
+      else
+        this.$store.commit('tutor/disableContinue')
+    }
   },
   methods: {
     clearForm() {
@@ -89,6 +100,7 @@ export default {
             await this.$store.dispatch('trucks/storeMeal', {meal: this.meal, file: this.mealImg});
           this.clearForm()
           this.$emit('hide')
+          this.$store.dispatch('nextStep');
         } catch (e) {
           console.log(e)
         }

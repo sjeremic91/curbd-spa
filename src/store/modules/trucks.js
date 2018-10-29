@@ -6,6 +6,7 @@ function initTruck() {
     name: '',
     description: '',
     failed_order_message: 'Sorry we are not able to take your order at this moment. Hope to see you tommorow',
+    password: '',
     tax: '',
     address: '',
     city: '',
@@ -235,6 +236,20 @@ export default {
     isNew: (state) => state.singleTruck ? !!!state.singleTruck.id : true,
     categories: (state) => state.categories,
     selectedMealCategoryId: (state) => state.selectedMealCategoryId,
+    checkShifts: (state) => {
+      let valid = false;
+      state.singleTruck.shifts.forEach((shift) => {
+        console.log(shift)
+        if (shift.checked) {
+          valid = false;
+          if (shift.shift1_from && shift.shift1_to && ((shift.shift2_from && shift.shift2_to) || (!shift.shift2_from && !shift.shift2_to)))
+            valid = true
+        }
+
+      })
+      return valid;
+
+    },
     shiftDays: (state) => {
       if (!state.singleTruck)
         return [];

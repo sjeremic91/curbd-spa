@@ -4,13 +4,13 @@
     
     <h4>Trucks</h4>
     <b-form-group v-if="!connectingTruck">
-      <b-button id="v-step-3" @click="addTruck" to="" variant="primary">Add Truck</b-button>   
+      <b-button id="add-truck-btn" @click="addTruck" to="" variant="primary">Add Truck</b-button>   
     </b-form-group>
     </div>
 
     <b-row v-if="!connectingTruck">
-      <b-col sm="12" md="6" lg="4" class="mb-3" v-for="truck in trucks">
-        <app-truck :truck="truck" :key="truck.id" @edit-truck="$router.push('/dashboard/trucks/'+$event.id+'/edit/general')"></app-truck>
+      <b-col sm="12" md="6" lg="4" class="mb-3 truck-card" v-for="truck in trucks">
+        <app-truck :truck="truck"  :key="truck.id" @edit-truck="$router.push('/dashboard/trucks/'+$event.id+'/edit/general')"></app-truck>
       </b-col>
     </b-row> 
 
@@ -43,11 +43,17 @@ export default {
       this.connectingTruck = false
     }
     await this.fetch();
-    this.setStepIndex(3)
+    console.log('aaaa:',this.$store.getters['tutor/currentStep'])
+    this.nextStep()
+    /*if (this.$store.getters['tutor/currentStep'].name == 'save-truck')
+      this.goToStep('truck-card')
+    else
+      this.goToStep('add-truck')
+      */
   },
   methods: {
-    ...mapActions({fetch: 'trucks/fetch'}),
-    ...mapMutations(['setStepIndex']),
+    ...mapActions({fetch: 'trucks/fetch', nextStep:'nextStep'}),
+    ...mapActions(['goToStep']),
     addTruck() {
       this.$router.push('/dashboard/trucks/create/general');
     }

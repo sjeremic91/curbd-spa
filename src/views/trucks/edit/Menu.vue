@@ -2,11 +2,11 @@
   <div v-if="truck">
     <div class="d-flex flex-row-reverse flex-wrap">
       <b-form-group class="clearfix ml-3">
-        <b-button class="float-right" @click="updateMeal(initMeal())" variant="primary"><i class="fa fa-plus"></i> Add Meal</b-button>
+        <b-button class="float-right" id="btn-add-meal" @click="updateMeal(initMeal())" variant="primary"><i class="fa fa-plus"></i> Add Meal</b-button>
       </b-form-group>
 
       <b-form-group>
-        <b-button class="float-right" @click="showCategories" variant="secondary"><i class="fa fa-list"></i> Categories</b-button>
+        <b-button class="float-right" id="btn-categories" @click="showCategories" variant="secondary"><i class="fa fa-list"></i> Categories</b-button>
       </b-form-group>
     </div>
       <app-meal-categories-nav></app-meal-categories-nav>
@@ -14,7 +14,7 @@
 
     <div v-if="selectedCategory !== undefined" >
       <b-row v-if="selectedCategory.meals.length">
-        <b-col sm="12" md="6" lg="4" xl="3" class="mb-3" v-for="meal in selectedCategory.meals">
+        <b-col sm="12" md="6" lg="4" xl="3" class="mb-3 meal-card" v-for="meal in selectedCategory.meals">
           <app-meal :meal="meal" @show-items="showMealItems(meal)" @update="updateMeal(meal)" @delete="deleteMeal(meal)" :key="meal.id"></app-meal>
         </b-col>
       </b-row>
@@ -27,14 +27,14 @@
     <b-modal  ref="mealModal" size="lg" hide-footer title="Meal Details">
       <app-meal-form v-if="meal" :data="meal" ref="mealForm" @hide="hideModal()"></app-meal-form>
     </b-modal>
-    <b-modal ref="condimentsModal" size="lg" hide-footer title="Meal Condiments">
+    <b-modal ref="condimentsModal" @shown="$store.dispatch('nextStep')" size="lg" hide-footer title="Meal Condiments">
       <app-meal-condiments ref="condiments" @hide="hideCondimentsModal()"></app-meal-condiments>
     </b-modal>
-    <b-modal ref="categoriesModal" size="lg" @hidden="newCategoryName='';editCategory=null" hide-footer title="Categories">
+    <b-modal ref="categoriesModal" size="lg" id="modal-categories" @shown="$store.dispatch('nextStep')" @hidden="newCategoryName='';editCategory=null;$store.dispatch('nextStep')" hide-footer title="Categories">
       <b-form-group>
         <b-input-group>
-          <b-form-input placeholder="New Meal Category" v-model="newCategoryName"></b-form-input>
-          <b-btn v-if="editCategory == null" slot="append" @click="addCategory" variant="info"><i class="fa fa-plus"></i> </b-btn>
+          <b-form-input placeholder="New Meal Category" id="input-category" v-model="newCategoryName"></b-form-input>
+          <b-btn v-if="editCategory == null" id="btn-add-category" slot="append" @click="addCategory" variant="info"><i class="fa fa-plus"></i> </b-btn>
           <b-input-group-append v-else>
           <b-btn @click="updateCategory" variant="info"><i class="fa fa-save"></i> </b-btn>
           <b-btn @click="deleteCategory" variant="danger"><i class="fa fa-trash"></i> </b-btn>
@@ -82,10 +82,24 @@ export default {
       set(val) { this.$store.commit('trucks/setSelectedMealCategoryId', val)}
     },
   }, 
+  watch: {
+    newCategoryName(val) {
+      if (val.length)
+        this.$store.commit('tutor/enableContinue')
+      else
+        this.$store.commit('tutor/disableContinue')
+    }
+  },
+  created() {
+    this.$store.dispatch('nextStep')
+  },
   methods: {
     async addCategory() {
       await this.$store.dispatch('trucks/addMealCategory', this.newCategoryName);
       await this.$store.dispatch('trucks/fetchSingle', this.truck.id);
+      /*if (!this.selectedCategoryId)
+        this.selectedCategoryId = */
+      this.$store.dispatch('nextStep')
       this.newCategoryName = ''
     },
     async updateCategory() {
@@ -115,7 +129,7 @@ export default {
         description: '',
         price: null,
         image_path: null,
-        meal_cat_id: this.selectedCategory.id,
+        meal_cat_id: this.selectedCategoryId,
         description: '',
         gluten_free: false,
         extra_hot: false,
@@ -127,6 +141,7 @@ export default {
     showModal() {
       this.$nextTick(() => {
         this.$refs.mealModal.show()
+        this.$store.dispatch('nextStep')
       });
     },
     showCategories() {

@@ -6,7 +6,7 @@
       </div>
       <div class="ml-1 d-flex flex-nowrap align-self-start">
       
-      <b-button size="sm" class="mr-1" @click="$emit('update')" variant="outline-warning">
+      <b-button size="sm" class="btn-meal-edit mr-1" @click="$emit('update')" variant="outline-warning">
         <i class="fa fa-edit"></i>
       </b-button>
       <b-button size="sm" @click="$emit('delete')" variant="outline-danger">
@@ -28,7 +28,7 @@
 
 
       <div class="d-flex card-text justify-content-between">
-        <b-button @click="$emit('show-items')" variant="outline-info" size="sm" ><i class="fa fa-list"></i>  Items: {{meal.count_condiments}}</b-button>
+        <b-button @click="$emit('show-items')" class="btn-meal-info" variant="outline-info" size="sm" ><i class="fa fa-list"></i>  Items: {{meal.count_condiments}}</b-button>
         <span class="align-self-end">
           Price: <b>${{meal.price}}</b> 
         </span>

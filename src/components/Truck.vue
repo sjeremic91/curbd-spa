@@ -8,7 +8,7 @@
         </a>
       </strong> 
       <div class="d-flex flex-nowrap align-self-start">
-        <b-button size="sm" class="mr-2" variant="warning" @click="$emit('edit-truck', truck)">
+        <b-button size="sm" class="btn-edit truck mr-2" variant="warning" @click="$emit('edit-truck', truck)">
           <i class="fa fa-edit"></i>
         </b-button>
         <b-button size="sm mr-2" :variant="truck.published ? 'success' : 'danger'" @click="publish(truck)">
@@ -66,7 +66,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions({publish: 'trucks/publish', verify: 'trucks/verify'}),
+    ...mapActions({publish: 'trucks/publish', verify: 'trucks/verify', nextStep: 'tutor/nextStep'}),
     async disconnect() {
       await axios.post('api/stripe/truck/'+this.truck.id+'/disconnect')
       await this.$store.dispatch('trucks/fetch')

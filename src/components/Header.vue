@@ -1,7 +1,7 @@
 <template>
-  <b-navbar  fixed="top" toggleable="md" type="dark" variant="primary">
+  <b-navbar id="app-navbar" fixed="top" toggleable="md" type="dark" variant="primary">
 
-    <div id="v-step-0" >
+    <div id="logo" >
       <b-navbar-brand  @click="toggleSidebar()" href="#"><img src="../assets/img/logo.png" alt="Logo"></b-navbar-brand>
 
     </div>
@@ -38,7 +38,7 @@ export default {
     ...mapState({user: (state) => state.auth.user, truck: (state) => state.trucks.singleTruck, stepIndex : (state)=> state.stepIndex}),
   },
   methods: {
-    ...mapMutations(['toggleSidebar']),
+    ...mapActions(['toggleSidebar']),
     async logout() {
       await this.$store.dispatch('auth/logout');
       this.$router.push('/login');

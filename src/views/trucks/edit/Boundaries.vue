@@ -2,7 +2,7 @@
     <b-row class="justify-content-md-center">
       <b-col lg="8">
 
-        <b-form>
+        <b-form  id="boundaries-form">
           <b-form-group  horizontal  breakpoint="md"  label="Order Failed" label-for="unsuccessfull-order" description="Unable to handle order message">
             <b-form-textarea id="unsuccessfull-order" v-model="truckFailedOrderMessage" placeholder="Please enter the message for failed orders..." rows="3"></b-form-textarea>
           </b-form-group>
@@ -35,7 +35,7 @@ export default {
 
   components: {AppShifts},
   computed: {
-    ...mapGetters({isNewTruck: 'trucks/isNew', truck: 'trucks/singleTruck', categories: 'trucks/categories'}),
+    ...mapGetters({isNewTruck: 'trucks/isNew', truck: 'trucks/singleTruck', categories: 'trucks/categories', checkShifts: 'trucks/checkShifts'}),
     truckDeliveryTime: {
       get() { return this.$store.state.trucks.singleTruck.min_delivery_time },
       set(value) { return this.$store.commit('trucks/setTruckProperty', {field: 'min_delivery_time', value}) }
@@ -48,6 +48,18 @@ export default {
       get() { return this.$store.state.trucks.singleTruck.max_items_per_order },
       set(value) { return this.$store.commit('trucks/setTruckProperty', {field: 'max_items_per_order', value}) }
     },
+    formIsValid() {
+      //console.log('validForm', this.truckFailedOrderMessage.length , this.truckDeliveryTime , this.checkShifts , !this.errors.any())
+      return this.truckFailedOrderMessage.length && this.truckDeliveryTime && this.checkShifts && !this.errors.any()
+    }
+  },
+  watch: {
+    formIsValid(val) {
+        if (val)
+          this.$store.commit('tutor/enableContinue')
+        else
+          this.$store.commit('tutor/disableContinue')
+    }
   },
   data() {
     return {
@@ -55,6 +67,13 @@ export default {
     }
   },
   created() {
+    this.$store.dispatch('goToStep', 'boundaries-form');
+  },
+  methods: {
+
+    validateForm(val) {
+      let res = this.truckFailedOrderMessage.length && this.truckDeliveryTime.length && this.checkShifts && !this.errors.any()
+    }
   }
 }
 </script>

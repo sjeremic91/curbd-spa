@@ -1,38 +1,39 @@
 <template>
   <b-row  class="justify-content-md-center">
     <b-col lg="8">
-      <b-form>
+      <b-form id="location-form">
         <b-form-group horizontal :label="'Street '+star">
-          <b-form-input placeholder="Street" v-model="truckStreet"></b-form-input>
+          <b-form-input placeholder="Street" name="address" v-model="truckStreet"></b-form-input>
         </b-form-group>
         <b-form-group horizontal class="mb-0" :label="'City and ZIP '+star">
           <b-form-row>
             <b-col sm="12" md="6">
               <b-form-group>
-                <b-form-input placeholder="City" v-model="truckCity"></b-form-input>
+                <b-form-input placeholder="City" name="city" v-model="truckCity"></b-form-input>
               </b-form-group>
             </b-col>
             <b-col sm="12" md="6">
               <b-form-group>
-                <b-form-input placeholder="ZIP" v-model="truckZip"></b-form-input>
+                <b-form-input placeholder="ZIP" name="zip" v-model="truckZip"></b-form-input>
               </b-form-group>
             </b-col>
           </b-form-row>
         </b-form-group>
         <b-form-group horizontal :label="'State '+star">
-          <b-form-input placeholder="State" v-model="truckState"></b-form-input>
+          <b-form-input placeholder="State" name="state" v-model="truckState"></b-form-input>
         </b-form-group>
         <b-form-group horizontal :label="'Latitude '+star">
-          <b-form-input placeholder="Latitude" v-model="truckLatitude"></b-form-input>
+          <b-form-input placeholder="Latitude" name="latitude" v-model="truckLatitude"></b-form-input>
         </b-form-group>
         <b-form-group horizontal :label="'Longitude '+star">
-          <b-form-input placeholder="Longitude" v-model="truckLongitude"></b-form-input>
+          <b-form-input placeholder="Longitude" name="longitude" v-model="truckLongitude"></b-form-input>
         </b-form-group>
       </b-form>
       <b-alert show variant="warning">
         <i class="fa fa-info-circle"></i> Alternatively you can use our map with a draggable pin marker to generate coordinates.
       </b-alert>
-      <GmapMap
+      <GmapMap 
+           id="gmap"
            :center="position"
            :zoom="7"
            style="height: 300px"
@@ -56,7 +57,7 @@ import axios from 'axios'
 
 export default {
   computed: {
-    ...mapGetters({truck: 'trucks/singleTruck'}),
+    ...mapGetters({truck: 'trucks/singleTruck', currentStep: 'tutor/currentStep'}),
     truckStreet: {
       get() { return this.$store.state.trucks.singleTruck.address },
       set(value) { return this.$store.commit('trucks/setTruckProperty', {field: 'address', value}) }
@@ -91,6 +92,25 @@ export default {
         return {lat: parseFloat(this.truckLatitude), lng: parseFloat(this.truckLongitude)}
       return {lat: 10, lng: 10}
     },
+
+    formIsValid() {
+      return this.truckStreet.length && this.truckCity.length && this.truckZip && this.truckState
+    }
+  },
+  created() {
+    this.$store.dispatch('goToStep', 'location-form');
+  },
+  destroyed() {
+    this.$root.$off('next-step');
+  },
+  watch: {
+
+    formIsValid(val) {
+      if (val)
+        this.$store.commit('tutor/enableContinue')
+      else
+        this.$store.commit('tutor/disableContinue')
+    }
   },
   data() {
     return {
