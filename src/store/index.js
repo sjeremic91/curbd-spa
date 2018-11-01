@@ -39,9 +39,12 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    async toggleSidebar({commit, dispatch}) {
+    toggleSidebar({commit, dispatch}) {
       commit('toggleSidebar') 
-      await dispatch('goToStep', 'sidebar')
+      return new Promise((resolve) => setTimeout(() => {
+        dispatch('goToStep', 'sidebar')
+        resolve()
+      }, 300))
     },
   },
   getters: {

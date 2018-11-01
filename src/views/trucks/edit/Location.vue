@@ -98,7 +98,10 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('goToStep', 'location-form');
+    this.$store.dispatch('nextStep');
+    setTimeout(() => {
+      this.$root.$emit('show-tutor-overlay')
+    }, 500)
   },
   destroyed() {
     this.$root.$off('next-step');

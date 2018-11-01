@@ -24,13 +24,14 @@
     </div>
 
     
-    <b-modal  ref="mealModal" size="lg" hide-footer title="Meal Details">
+    <b-modal  ref="mealModal" @hidden="prepareModal" size="lg" hide-footer title="Meal Details">
       <app-meal-form v-if="meal" :data="meal" ref="mealForm" @hide="hideModal()"></app-meal-form>
     </b-modal>
-    <b-modal ref="condimentsModal" @shown="$store.dispatch('nextStep')" size="lg" hide-footer title="Meal Condiments">
+    <b-modal ref="condimentsModal" @shown="prepareModal" @hidden="prepareModal" size="lg" hide-footer title="Meal Condiments">
       <app-meal-condiments ref="condiments" @hide="hideCondimentsModal()"></app-meal-condiments>
     </b-modal>
-    <b-modal ref="categoriesModal" size="lg" id="modal-categories" @shown="$store.dispatch('nextStep')" @hidden="newCategoryName='';editCategory=null;$store.dispatch('nextStep')" hide-footer title="Categories">
+    <b-modal ref="categoriesModal" size="lg" id="modal-categories" @shown="prepareModal" @hidden="newCategoryName='';editCategory=null;$store.dispatch('nextStep');$root.$emit('show-tutor-overlay')" hide-footer title="Categories">
+      
       <b-form-group>
         <b-input-group>
           <b-form-input placeholder="New Meal Category" id="input-category" v-model="newCategoryName"></b-form-input>
@@ -91,15 +92,29 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('nextStep')
+    /*if (this.$store.getters['tutor/currentStep']) {
+      this.$store.dispatch('nextStep')
+    } else {
+      this.$store.dispatch('goToStep', 'meal-card')
+    }*/
+      setTimeout(() => {
+        this.$root.$emit('show-tutor-overlay')
+      }, 500)
   },
   methods: {
+    prepareModal() {
+      this.$store.dispatch('nextStep');
+      setTimeout(() => {
+      this.$root.$emit('show-tutor-overlay')
+      }, 300)
+    },
     async addCategory() {
       await this.$store.dispatch('trucks/addMealCategory', this.newCategoryName);
       await this.$store.dispatch('trucks/fetchSingle', this.truck.id);
       /*if (!this.selectedCategoryId)
         this.selectedCategoryId = */
       this.$store.dispatch('nextStep')
+      this.$root.$emit('show-tutor-overlay')
       this.newCategoryName = ''
     },
     async updateCategory() {
@@ -142,6 +157,9 @@ export default {
       this.$nextTick(() => {
         this.$refs.mealModal.show()
         this.$store.dispatch('nextStep')
+        setTimeout(() => {
+        this.$root.$emit('show-tutor-overlay')
+        }, 500)
       });
     },
     showCategories() {
@@ -174,6 +192,10 @@ export default {
       this.$nextTick(() => {
         this.$refs.condimentsModal.show()
         this.$refs.condiments.resetAll()
+        /*this.$store.dispatch('nextStep')
+        setTimeout(() => {
+        this.$root.$emit('show-tutor-overlay')
+        }, 500)*/
       });
     },
     updateMeal(meal) {

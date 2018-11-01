@@ -1,11 +1,11 @@
 <template>
   <div class="container-fluid">
     <div class="d-flex mb-5 mt-4 justify-content-between">
-    
-    <h4>Trucks</h4>
-    <b-form-group v-if="!connectingTruck">
-      <b-button id="add-truck-btn" @click="addTruck" to="" variant="primary">Add Truck</b-button>   
-    </b-form-group>
+
+      <h4>Trucks</h4>
+      <b-form-group v-if="!connectingTruck">
+        <b-button id="add-truck-btn" @click="addTruck" to="" variant="primary">Add Truck</b-button>   
+      </b-form-group>
     </div>
 
     <b-row v-if="!connectingTruck">
@@ -43,13 +43,13 @@ export default {
       this.connectingTruck = false
     }
     await this.fetch();
-    console.log('aaaa:',this.$store.getters['tutor/currentStep'])
-    this.nextStep()
-    /*if (this.$store.getters['tutor/currentStep'].name == 'save-truck')
-      this.goToStep('truck-card')
+    if (this.$store.getters['tutor/currentStep'])
+      await this.nextStep()
     else
-      this.goToStep('add-truck')
-      */
+      await this.goToStep('truck-card')
+    setTimeout(() => {
+    this.$root.$emit('show-tutor-overlay')
+    });
   },
   methods: {
     ...mapActions({fetch: 'trucks/fetch', nextStep:'nextStep'}),

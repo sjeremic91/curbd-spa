@@ -2,7 +2,9 @@
   <b-navbar id="app-navbar" fixed="top" toggleable="md" type="dark" variant="primary">
 
     <div id="logo" >
-      <b-navbar-brand  @click="toggleSidebar()" href="#"><img src="../assets/img/logo.png" alt="Logo"></b-navbar-brand>
+      <b-navbar-brand  @click="toggleSidebar()" href="#">
+        <img @load="prepareOverlay();" src="../assets/img/logo.png" alt="Logo">
+      </b-navbar-brand>
 
     </div>
 
@@ -38,10 +40,19 @@ export default {
     ...mapState({user: (state) => state.auth.user, truck: (state) => state.trucks.singleTruck, stepIndex : (state)=> state.stepIndex}),
   },
   methods: {
-    ...mapActions(['toggleSidebar']),
+    prepareOverlay() {
+      let currentStep = this.$store.getters['tutor/currentStep']
+      if (currentStep && currentStep.name == 'logo')
+        this.$root.$emit('show-tutor-overlay')
+    },
+
     async logout() {
       await this.$store.dispatch('auth/logout');
       this.$router.push('/login');
+    },
+    async toggleSidebar() {
+      await this.$store.dispatch('toggleSidebar')
+      this.$root.$emit('show-tutor-overlay')
     }
   }
 

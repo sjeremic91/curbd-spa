@@ -14,11 +14,12 @@ export default {
 
   components: {AppTutor},
   mounted() {
-    window.addEventListener('load', () => {
-         // run after everything is in-place
-      //this.$tours['myTour'].start()
-    })
 
+  },
+  updated() {
+    this.$nextTick(() => {
+    console.log('updated')
+    })
   },
   async created() {
     axios.interceptors.response.use(undefined, function (err) {
@@ -41,6 +42,7 @@ export default {
 
 body {
   font-family: 'Montserrat', sans-serif;
+  min-height: 100vh;
 }
 
 .swal-title {
@@ -144,5 +146,10 @@ body {
 .focused-element {
   z-index: 100000 !important;
   position: relative;
+}
+
+.modal-dialog {
+  //padding-bottom:10rem;
+  margin-bottom: 10rem;
 }
 </style>

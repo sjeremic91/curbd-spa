@@ -59,6 +59,9 @@ export default {
       else
         this.goToStep('step-menu');*/
     this.nextStep();
+    console.log('categories', this.categories)
+    this.$root.$emit('show-tutor-overlay')
+    console.log('categories', this.categories)
   },
   computed: {
     ...mapGetters({currentStep: 'tutor/currentStep', isNewTruck: 'trucks/isNew', truck: 'trucks/singleTruck', categories: 'trucks/categories'}),

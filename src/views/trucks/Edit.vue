@@ -2,19 +2,18 @@
     <div class="edit-card pb-5" >
       <b-breadcrumb :items="breadcrumbItems"></b-breadcrumb>
       <b-container fluid >
-        <div class="d-flex pt-4 mb-3 justify-content-between">
-          <h4>{{title}}</h4>
-          <div class="align-self-start">
-          <b-button class="mr-3" id="save-truck" @click="saveTruck()" variant="success">Save All</b-button>
-          <b-button v-if="!isNew" @click="deleteTruck()" variant="danger"><i class="fa fa-trash"></i> Delete</b-button>
-          
+        <b-row class="mb-2">
+          <h4 class="col-6">{{title}}</h4>
+          <div class="d-flex flex-row-reverse col-6">
+            <b-button v-if="!isNew" size="sm" @click="deleteTruck()" variant="danger"><i class="fa fa-trash"></i> Delete</b-button>
+            <b-button class="mr-1" size="sm" id="save-truck" @click="saveTruck()" variant="success">Save</b-button>
           </div>
-        </div>
+        </b-row>
       <b-nav v-if="!isNew" justified tabs>
         <b-nav-item class="text-md-left" :to="{name: 'truck-general'}"><i class="fa fa-info-circle"></i> <span class="d-none d-md-inline"> General</span></b-nav-item>
         <b-nav-item class="text-md-left"  :to="{name: 'truck-boundaries'}"><i class="fa fa-minus-circle"></i> <span class="d-none d-md-inline"> Boundaries</span></b-nav-item>
         <b-nav-item class="text-md-left" :to="{name: 'truck-location'}"><i class="fa fa-map"></i> <span class="d-none d-md-inline"> Location</span></b-nav-item>
-        <b-nav-item class="text-md-left" id="step-menu" :to="{name: 'truck-menu'}"><i class="fa fa-coffee"></i> <span class="d-none d-md-inline"> Menu</span></b-nav-item>
+        <b-nav-item class="text-md-left" id="step-menu" @click="goToMenu"><i class="fa fa-coffee"></i> <span class="d-none d-md-inline"> Menu</span></b-nav-item>
       </b-nav>
       <b-nav v-else justified tabs>
         <b-nav-item class="text-md-left" :to="{name: 'create-truck-general'}"><i class="fa fa-info-circle"></i> <span class="d-none d-md-inline"> General</span></b-nav-item>
@@ -54,8 +53,8 @@ export default {
     }
   },
 
-  async beforeRouteEnter(to, from, next) {
-    await next( async vm => {
+  beforeRouteEnter(to, from, next) {
+    next( async vm => {
       console.log('poceo');
       if (!vm.isNew)  {
         try {
@@ -68,6 +67,7 @@ export default {
         vm.$store.dispatch('trucks/initSingle')
       }
       await vm.$store.dispatch('trucks/fetchCategories');
+      vm.$root.$emit('show-tutor-overlay')
       console.log('gotovo');
     })
     console.log('izasao');
@@ -81,6 +81,13 @@ export default {
     next();
   },
   methods: {
+    goToMenu() {
+      this.$router.push({name: 'truck-menu'})
+      this.$store.dispatch('nextStep');
+      setTimeout(() => {
+        this.$root.$emit('show-tutor-overlay')
+      }, 500)
+    },
     async saveTruck() {
       await this.$store.dispatch('trucks/saveTruck')
       this.$router.push({name: 'trucks'})

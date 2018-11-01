@@ -4,12 +4,15 @@ export default [
     target: '#logo',  // We're using document.querySelector() under the hood
     heading: 'Welcome!',
     content: `Press logo to open sidebar`,
+    ignoreHeader: true,
+    scrollDisabled: true,
   },
   {
     name: 'sidebar',
     target: '#sidebar-truck',
     heading: 'Sidebar',
     content: 'Here you can see your Orders and Trucks. Choose Trucks option to continue.',
+    scrollDisabled: true
   },
   {
     name: 'add-truck',
@@ -67,11 +70,13 @@ export default [
     content: 'This is your truck, here you can se basic data about it',
     hasContinue: true,
     continueDisabled: false,
+    scrollDisabled: true,
     unclickable: true
   },
   {
     name: 'btn-edit-truck',
     target: '.truck-card:last-child .btn-edit',
+    scrollDisabled: true,
     content: 'Click on edit icon, to procced',
   },
   {
@@ -103,7 +108,9 @@ export default [
   },
   {
     name: 'btn-close-category-modal',
+    ignoreHeader: true,
     target: '#modal-categories button.close',
+    
     content: 'Press button to close modal',
   },
   {
@@ -117,6 +124,7 @@ export default [
     name: 'form-meal',
     target: '#form-meal',
     heading: 'Meal',
+    ignoreHeader: true,
     hasContinue: true,
     content: 'Fill the form then press next',
   },
@@ -124,6 +132,7 @@ export default [
     name: 'btn-save-meal',
     target: '#btn-save-meal',
     heading: 'Meal',
+    ignoreHeader: true,
     content: 'Press button to save your first meal',
   },
   {
@@ -144,8 +153,57 @@ export default [
   },
   {
     name: 'btn-add-condiment',
+    ignoreHeader: true,
     target: '#btn-add-condiment',
+    scrollDisabled: true,
     heading: 'Add Meal Condiment',
     content: 'Press button to create new meal condiment',
+  },
+  {
+    name: 'btn-add-condiment-category',
+    ignoreHeader: true,
+    target: '#btn-add-condiment-category',
+    scrollDisabled: true,
+    heading: 'Add Condiment Category',
+    content: 'Press button to create new condiment category',
+  },
+  {
+    name: 'input-add-condiment-category',
+    target: '#input-add-condiment-category',
+    heading: 'Add Condiment Category',
+    ignoreHeader: true,
+    scrollDisabled: true,
+    content: 'Type name of condiment category',
+    hasContinue: true,
+  },
+  {
+    name: 'btn-condiment-category-save',
+    target: '#btn-condiment-category-save',
+    ignoreHeader: true,
+    heading: 'Save Condiment Category',
+    content: 'Press button to save condiment category',
+  },
+  {
+    name: 'condiment-form',
+    target: '#condiment-form',
+    ignoreHeader: true,
+    heading: 'Fill Condiment Data',
+    content: 'Fill the required data then press Save',
+  },
+  {
+    name: 'condiment-item',
+    target: '.condiment-item:first-child',
+    ignoreHeader: true,
+    heading: 'Condiment',
+    hasContinue: true,
+    continueDisabled: false,
+    content: 'This is the preview of your condiment, where you can see it basic info',
+    unclickable: true
+  },
+  {
+    name: 'btn-close-condiment-modal',
+    ignoreHeader: true,
+    target: '.modal.show button.close',
+    content: 'Press button to close modal',
   },
 ]

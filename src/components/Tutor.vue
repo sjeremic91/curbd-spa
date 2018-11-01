@@ -21,11 +21,11 @@
     </transition>
     <transition name="fade" mode="out-in">
     <div v-if="stepIndex !== null">
-      <div :style="overlayLeftStyle" class="tutor-overlay-left"></div>
-      <div :style="overlayBottomStyle" class="tutor-overlay-bottom"></div>
-      <div :style="overlayRightStyle" class="tutor-overlay-right"></div>
-      <div :style="overlayTopStyle" class="tutor-overlay-top"></div>
-      <div :style="overlayShadowStyle" class="tutor-overlay-shadow"></div>
+      <div touch-action="none" :style="overlayLeftStyle" class="tutor-overlay-left"></div>
+      <div touch-action="none" :style="overlayBottomStyle" class="tutor-overlay-bottom"></div>
+      <div touch-action="none" :style="overlayRightStyle" class="tutor-overlay-right"></div>
+      <div touch-action="none" :style="overlayTopStyle" class="tutor-overlay-top"></div>
+      <div touch-action="none" :style="overlayShadowStyle" class="tutor-overlay-shadow"></div>
     </div>
     <!--div v-else class="tutor-overlay-all"></div-->
     </transition>
@@ -35,8 +35,9 @@
 //import steps from '@/TourSteps'
 import {mapState, mapGetters} from 'vuex'
 //import Popper from 'popper.js'
-import {disableScroll, enableScroll} from '@/utils'
+import {disableScroll, enableScroll, scrollIt} from '@/utils'
 import swal from 'sweetalert'
+import _ from 'lodash'
 
 export default {
   computed: {
@@ -57,107 +58,116 @@ export default {
     }
   },
   watch: {
-    stepIndex(val) {
-      if (val == 0)
-        this.showCurrentStep(false);
-      else
-        this.showCurrentStep(true);
+    /*stepIndex(val) {
+      this.showCurrentStep();
 
       if (this.currentStep) {
         this.$nextTick(() => {
-          let el = document.querySelector(this.$store.getters['tutor/currentStep'].target)
-          console.log('top',el.getBoundingClientRect().top);
+          let el = document.querySelector(this.currentStep.target)
           let bodyRect = document.body.getBoundingClientRect()
-          window.scrollTo({top: el.getBoundingClientRect().top-bodyRect.top-56-8, behavior: 'smooth'})
+          enableScroll();
+          console.log('offsetTop:', el.offsetTop)
+          window.scrollTo(0,  el.getBoundingClientRect().top - bodyRect.top - 56 - 8)
           if (this.$store.getters['tutor/currentStep'].scrollDisabled)
             disableScroll();
           else
             enableScroll();
         })
       }
-      /*this.$nextTick(() => {
-        if (this.currentStep !== null && !this.isMobile()) {
-          let target = document.querySelector('.tutor-overlay-shadow');
-          new Popper(target, document.getElementById('popper'), {
-            placement: 'right',
-            preventOverflow: {
-              boundariesElement : 'viewport'
-            }
-          });
-        }
-      })*/
-    }
+    }*/
   },
   mounted() {
-    swal({
-      title: 'Start tutorial?',
-      buttons: true
-    }).then((answer) => {
-      if (answer) {
-        //disableScroll();
-        this.$router.push('/dashboard/orders');
-        this.$store.commit('tutor/startTutor');
-        this.$store.dispatch('goToStep', 'logo');
 
-        //this.showCurrentStep()
-        window.addEventListener('scroll', this.showCurrentStep);
-      }
+    window.onscroll = () => this.showCurrentStep();
+    window.ontouchmove = () => this.showCurrentStep();
+
+    this.$root.$on('show-tutor-overlay', () => {
+      this.$nextTick(() => {
+        enableScroll();
+        if (this.currentStep) {
+          let el = document.querySelector(this.currentStep.target)
+          let bodyRect = document.body.getBoundingClientRect()
+          console.log('currentStep:', this.currentStep.target)
+          //scrollIt(el.offsetTop)
+          let top =  el.getBoundingClientRect().top - bodyRect.top - 56 - 8
+          console.log('top', top);
+          window.scrollTo({top:top, behavior: 'instant'})
+          let modal = document.querySelector('.modal.show')
+          if (modal) {
+            top =  el.getBoundingClientRect().top - modal.getBoundingClientRect().top -  8
+            modal.scrollTo({top:top, behavior: 'instant'})
+            if (!modal.onscroll)  {
+
+              modal.onscroll = () => this.showCurrentStep();
+
+            }
+          }
+
+          if (this.currentStep.scrollDisabled)
+            disableScroll();
+          else
+            enableScroll();
+        }
+        this.showCurrentStep();
+      })
     })
   },
   methods: {
     async nextStep() {
       await this.$store.dispatch('nextStep')
       this.$root.$emit('next-step')
+      this.$root.$emit('show-tutor-overlay')
       //if (this.isMobile()) {
      // }
     },
-    showCurrentStep(maskHeader) {
-        let w = document.documentElement.clientWidth;
-        let h = document.documentElement.clientHeight;
+    showCurrentStep() {
+      let maskHeader = this.currentStep ? !this.currentStep.ignoreHeader : true;
+      let w = document.body.clientWidth;
+      let h = document.body.clientHeight;
 
-        let target = null;
-        let header = document.getElementById('app-navbar');
-        if (this.stepIndex !== null)
-          target = document.querySelector(this.currentStep.target);
-        if (target) {
-          let rect = target.getBoundingClientRect();//offset(target)
-          rect = {top: rect.top, left: rect.left, bottom: rect.bottom, right: rect.right, width: rect.width, height: rect.height}
+      let target = null;
+      let header = document.getElementById('app-navbar');
+      if (this.stepIndex !== null)
+        target = document.querySelector(this.currentStep.target);
+      if (target) {
+        let rect = target.getBoundingClientRect();//offset(target)
+        rect = {top: rect.top, left: rect.left, bottom: rect.bottom, right: rect.right, width: rect.width, height: rect.height}
 
-          let m = 8;
-          rect.left=Math.max(rect.left-m, 0);
-          rect.right=Math.min(rect.right+m, w);
-          rect.top=Math.max(rect.top-m, maskHeader ? header.clientHeight : 0);
-          rect.bottom=Math.min(rect.bottom+m, h);
-          rect.width=Math.max(rect.right-rect.left, 0);
-          rect.height=Math.max(0, rect.bottom-rect.top);
-          //console.log(rect)
+        let m = 8;
+        rect.left=Math.max(rect.left-m, 0);
+        rect.right=Math.min(rect.right+m, w);
+        rect.top=Math.max(rect.top-m, maskHeader ? header.clientHeight : 0);
+        rect.bottom=Math.min(rect.bottom+m, h);
+        rect.width=Math.max(rect.right-rect.left, 0);
+        rect.height=Math.max(0, rect.bottom-rect.top);
+        //console.log(rect)
 
 
-          this.overlayLeftStyle.width = rect.left+'px'
-          this.overlayLeftStyle.height = rect.bottom+'px'
+        this.overlayLeftStyle.width = rect.left+'px'
+        this.overlayLeftStyle.height = rect.bottom+'px'
 
-          this.overlayBottomStyle.top = rect.bottom+'px'
-          this.overlayBottomStyle.width = rect.right+'px'
-          this.overlayBottomStyle.height = Math.max(h-rect.bottom)+'px'
+        this.overlayBottomStyle.top = rect.bottom+'px'
+        this.overlayBottomStyle.width = rect.right+'px'
+        this.overlayBottomStyle.height = Math.max(h-rect.bottom)+'px'
 
-          this.overlayRightStyle.top = rect.top+'px'
-          this.overlayRightStyle.left = rect.right+'px'
-          this.overlayRightStyle.width = Math.max(0,w-rect.right)+'px'
-          this.overlayRightStyle.height = Math.max(0, h-rect.top)+'px'
+        this.overlayRightStyle.top = rect.top+'px'
+        this.overlayRightStyle.left = rect.right+'px'
+        this.overlayRightStyle.width = Math.max(0,w-rect.right)+'px'
+        this.overlayRightStyle.height = Math.max(0, h-rect.top)+'px'
 
-          this.overlayTopStyle.left = rect.left+'px'
-          this.overlayTopStyle.width = Math.max(w-rect.left)+'px'
-          this.overlayTopStyle.height = rect.top+'px'
+        this.overlayTopStyle.left = rect.left+'px'
+        this.overlayTopStyle.width = Math.max(w-rect.left)+'px'
+        this.overlayTopStyle.height = rect.top+'px'
 
-          this.overlayShadowStyle.left = rect.left+'px'
-          this.overlayShadowStyle.top = rect.top+'px'
-          this.overlayShadowStyle.width = rect.width+'px'
-          this.overlayShadowStyle.height = rect.height+'px'
+        this.overlayShadowStyle.left = rect.left+'px'
+        this.overlayShadowStyle.top = rect.top+'px'
+        this.overlayShadowStyle.width = rect.width+'px'
+        this.overlayShadowStyle.height = rect.height+'px'
 
-          this.overlayShadowStyle.pointerEvents = 'none'
-          if (this.currentStep.unclickable)
-            this.overlayShadowStyle.pointerEvents = 'auto'
-        }
+        this.overlayShadowStyle.pointerEvents = 'none'
+        if (this.currentStep.unclickable)
+          this.overlayShadowStyle.pointerEvents = 'auto'
+      }
     },
   }
 }
@@ -168,6 +178,7 @@ export default {
 @import "../assets/scss/_variables.scss";
 
 .tutor-wrapper {
+  position: relative;
   top: 0;
   left: 0;
 }
@@ -185,6 +196,7 @@ export default {
 
 .tutor-overlay-left {
   position: fixed;
+  touch-action: none;
   background: black;
   z-index:1051;
   opacity: 0.3;
@@ -193,6 +205,7 @@ export default {
 .tutor-overlay-bottom {
   position: fixed;
   background: black;
+  touch-action: none;
   z-index:1051;
   opacity: 0.3;
 }
@@ -200,6 +213,7 @@ export default {
 .tutor-overlay-right {
   position: fixed;
   background: black;
+  touch-action: none;
   z-index:1051;
   opacity: 0.3;
 }
@@ -207,6 +221,7 @@ export default {
 .tutor-overlay-top {
   position: fixed;
   background: black;
+  touch-action: none;
   z-index:1051;
   opacity: 0.3;
 }
@@ -243,8 +258,11 @@ export default {
   }
 
   .popper-content {
-    min-height: 120px;
     padding: 16px;
+    
+    p {
+      margin-bottom: 0;
+    }
   }
 
   .popper-header {
@@ -270,6 +288,11 @@ export default {
     top: auto;
     left:auto;
     right: 20px;
+
+    .popper-content {
+
+    min-height: 120px;
+    }
 
     .popper__arrow {
       display: block;

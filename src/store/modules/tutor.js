@@ -5,6 +5,7 @@ export default {
   state: {
     startTutor: false,
     stepIndex: null,
+    tutorCanceled: false,
     steps: steps.map((step) => {
       let continueDisabled = step.continueDisabled === undefined ? true : step.continueDisabled
       return {...step, continueDisabled}
@@ -16,6 +17,7 @@ export default {
     },
     endTutor(state) {
       state.startTutor = false
+      state.tutorCanceled = true
       state.stepIndex = null
     },
     setCurrentStep(state, name) {
@@ -38,12 +40,13 @@ export default {
       root: true,
 
       handler({commit}, name) {
-        commit('setCurrentStep', null); 
-        if (name)
+        //commit('setCurrentStep', null); 
+            commit('setCurrentStep', name)
+        /*if (name)
           return new Promise(resolve => setTimeout(() => {
             commit('setCurrentStep', name)
             resolve()
-          }, 500))
+          }, 500))*/
       }
     },
     nextStep: {
@@ -55,12 +58,13 @@ export default {
           commit('endTutor')
           return
         }
-        commit('setCurrentStep', null); 
-        return new Promise(resolve => setTimeout(() => {
+        //commit('setCurrentStep', null); 
+        commit('setCurrentStep', state.steps[nextIndex].name)
+        /*return new Promise(resolve => setTimeout(() => {
           console.log('nextStep: ', state.steps[nextIndex].name)
           commit('setCurrentStep', state.steps[nextIndex].name)
           resolve()
-        }, 500))
+        }, 500))*/
       }
     }
   },

@@ -67,7 +67,10 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('goToStep', 'boundaries-form');
+    this.$store.dispatch('nextStep');
+    setTimeout(() => {
+      this.$root.$emit('show-tutor-overlay')
+    }, 500)
   },
   methods: {
 

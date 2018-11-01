@@ -100,7 +100,6 @@ export default {
             await this.$store.dispatch('trucks/storeMeal', {meal: this.meal, file: this.mealImg});
           this.clearForm()
           this.$emit('hide')
-          this.$store.dispatch('nextStep');
         } catch (e) {
           console.log(e)
         }

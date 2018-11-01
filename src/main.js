@@ -57,11 +57,59 @@ Vue.use(VueGoogleMaps, {
 router.beforeEach(async (to, from, next) => {
   store.commit('hideSidebar')
   try {
-  if (!store.getters['auth/user'].id)
-    await store.dispatch('auth/fetchUser');
+    if (!store.getters['auth/user'].id)
+      await store.dispatch('auth/fetchUser');
   } catch (e) {
     await store.dispatch('auth/logout');
   }
+
+  //Prompt for tutorial
+  let user = store.state.auth.user;
+  if (!store.state.tutor.startTutor && !store.state.tutor.tutorCanceled && user && user.type == 'vendor' && user.tutorial_checkpoint < 10) {
+    let answer = await swal({
+      title: 'Start tutorial?',
+      buttons: true
+    })
+    if (answer) {
+      //disableScroll();
+      const START_TUTORIAL = null;
+      const TRUCK_CREATED = 1;
+      const CATEGORY_CREATED = 2;
+      const MEAL_CREATED = 3;
+      console.log(user)
+      store.commit('tutor/startTutor');
+      if (user.tutorial_checkpoint === START_TUTORIAL) {
+        await store.dispatch('goToStep', 'logo');
+        next('/dashboard/orders');
+        return;
+        //router.app.$emit('show-tutor-overlay');
+      }
+      if (user.tutorial_checkpoint === TRUCK_CREATED)  {
+        next('/dashboard/trucks');
+        return;
+      }
+      if (user.tutorial_checkpoint === CATEGORY_CREATED)  {
+        await store.dispatch('trucks/fetch')
+        let id = store.state.trucks.trucks[store.state.trucks.trucks.length-1].id
+        next('/dashboard/trucks/'+id+'/edit/menu');
+        store.dispatch('goToStep', 'btn-add-meal');
+        return;
+      }
+      if (user.tutorial_checkpoint === MEAL_CREATED)  {
+        await store.dispatch('trucks/fetch')
+        let id = store.state.trucks.trucks[store.state.trucks.trucks.length-1].id
+        next('/dashboard/trucks/'+id+'/edit/menu');
+        store.dispatch('goToStep', 'meal-card');
+        return;
+      }
+
+      //window.onscroll = () => this.showCurrentStep();
+      ///window.ontouchmove = this.showCurrentStep;
+      //window.ontouchend = this.showCurrentStep;
+    }
+  }
+
+
   if(to.matched.some(record => record.meta.requiresAuth)) {
     if (store.getters['auth/isLoggedIn'] && to.matched.some(record => record.meta.visibleTo == store.getters['auth/user'].type)) {
       next()
@@ -79,8 +127,9 @@ router.beforeEach(async (to, from, next) => {
     }
     if (store.getters['auth/user'].type == 'admin')
       next('/dashboard/vendors')
-    else
+    else {
       next('/dashboard/orders')
+    }
     return
   }
   else {
