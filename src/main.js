@@ -4,7 +4,6 @@ import BootstrapVue from 'bootstrap-vue'
 import VeeValidate from 'vee-validate';
 import moment from 'moment'
 import * as VueGoogleMaps from 'vue2-google-maps'
-import VueTour from 'vue-tour'
 require('vue-tour/dist/vue-tour.css')
 import {IMAGE_ROOT, GOOGLE_MAP_KEY} from '@/config/env'
 
@@ -39,7 +38,6 @@ Vue.prototype.isMobile = () => {
 
 Vue.use(BootstrapVue);
 
-Vue.use(VueTour);
 
 Vue.use(VueGoogleMaps, {
   load: {
