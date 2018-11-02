@@ -24,6 +24,7 @@
             <em>{{user.email}}</em>
           </template>
           <!--b-dropdown-item href="#">Profile</b-dropdown-item-->
+          <b-dropdown-item @click="startTutorial()">Tutorial</b-dropdown-item>
           <b-dropdown-item @click="logout()">Signout</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
@@ -49,6 +50,12 @@ export default {
     async logout() {
       await this.$store.dispatch('auth/logout');
       this.$router.push('/login');
+    },
+    async startTutorial() {
+      this.$store.commit('tutor/startTutor');
+     this.$store.dispatch('goToStep', 'logo');
+      this.$router.push('/dashboard/orders');
+      this.$root.$emit('show-tutor-overlay')
     },
     async toggleSidebar() {
       await this.$store.dispatch('toggleSidebar')

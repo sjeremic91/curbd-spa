@@ -69,6 +69,7 @@ export default {
     }
   },
   getters: {
-    currentStep : (state) => {return state.stepIndex === null ? null : state.steps[state.stepIndex] }
+    currentStep : (state) => {return state.stepIndex === null ? null : state.steps[state.stepIndex] },
+    lastStep: (state) => {return state.stepIndex === state.steps.length-1}
   }
 }

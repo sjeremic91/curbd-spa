@@ -39,12 +39,16 @@ export default {
       this.connectingTruck = true
       await axios.get(`api/stripe/create-vendor?code=${code}&id=${truck_id}`)
       localStorage.removeItem('truckId')
-      swal('Good job!', 'Truck is connected', 'success')
       this.connectingTruck = false
+      await swal('Good job!', 'Truck is connected', 'success')
     }
     await this.fetch();
     if (this.$store.getters['tutor/currentStep'])
       await this.nextStep()
+    else if (this.$store.getters['auth/tutorialCheckpoint'] == 4 && !code)
+      await this.goToStep('stripe-connect')
+    else if (this.$store.getters['auth/tutorialCheckpoint'] == 5 || code)
+      await this.goToStep('truck-visible')
     else
       await this.goToStep('truck-card')
     setTimeout(() => {

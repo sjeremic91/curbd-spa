@@ -65,6 +65,9 @@ export default {
     },
     user(state) {
       return state.user
+    },
+    tutorialCheckpoint(state) {
+      return state.user.tutorial_checkpoint
     }
   }
 }

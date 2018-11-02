@@ -63,16 +63,35 @@ router.beforeEach(async (to, from, next) => {
   //Prompt for tutorial
   let user = store.state.auth.user;
   if (!store.state.tutor.startTutor && !store.state.tutor.tutorCanceled && user && user.type == 'vendor' && user.tutorial_checkpoint < 10) {
-    let answer = await swal({
-      title: 'Start tutorial?',
-      buttons: true
-    })
+    const START_TUTORIAL = null;
+    const TRUCK_CREATED = 1;
+    const CATEGORY_CREATED = 2;
+    const MEAL_CREATED = 3;
+    const CONDIMENT_CREATED = 4;
+    const STRIPE_CONNECTED = 5;
+    const TUTORIAL_FINISHED = 6;
+    let answer = false;
+    //This is returning from Stripe
+    if (user.tutorial_checkpoint == CONDIMENT_CREATED && to.query.scope && to.query.code) {
+      answer = true;
+      store.commit('tutor/startTutor');
+      next()
+      return;
+    }
+    else if (user.tutorial_checkpoint == START_TUTORIAL) {
+      answer = await swal({
+        title: 'Start tutorial?',
+        buttons: true
+      })
+    }
+    else if (user.tutorial_checkpoint != TUTORIAL_FINISHED) {
+      answer = await swal({
+        title: 'Continue tutorial?',
+        buttons: true
+      })
+    }
     if (answer) {
       //disableScroll();
-      const START_TUTORIAL = null;
-      const TRUCK_CREATED = 1;
-      const CATEGORY_CREATED = 2;
-      const MEAL_CREATED = 3;
       console.log(user)
       store.commit('tutor/startTutor');
       if (user.tutorial_checkpoint === START_TUTORIAL) {
@@ -97,6 +116,14 @@ router.beforeEach(async (to, from, next) => {
         let id = store.state.trucks.trucks[store.state.trucks.trucks.length-1].id
         next('/dashboard/trucks/'+id+'/edit/menu');
         store.dispatch('goToStep', 'meal-card');
+        return;
+      }
+      if (user.tutorial_checkpoint === CONDIMENT_CREATED)  {
+        next('/dashboard/trucks');
+        return;
+      }
+      if (user.tutorial_checkpoint === STRIPE_CONNECTED)  {
+        next('/dashboard/trucks');
         return;
       }
 

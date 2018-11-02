@@ -11,10 +11,10 @@
         <b-button size="sm" class="btn-edit truck mr-2" variant="warning" @click="$emit('edit-truck', truck)">
           <i class="fa fa-edit"></i>
         </b-button>
-        <b-button size="sm mr-2" :variant="truck.published ? 'success' : 'danger'" @click="publish(truck)">
+        <b-button size="sm mr-2" class="btn-publish" :variant="truck.published ? 'success' : 'danger'" @click="publish(truck)">
           <i class="fa fa-eye"></i>
         </b-button>
-        <b-button size="sm" :variant="truck.user.verified ? 'success' : 'danger'" @click="verify(truck)">
+        <b-button size="sm" class="btn-verify" :variant="truck.user.verified ? 'success' : 'danger'" @click="verify(truck)">
           <i class="fa fa-check"></i>
         </b-button>
       </div>

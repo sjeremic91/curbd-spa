@@ -1,13 +1,13 @@
 <template>
   <div v-if="meal" class="p-1" style="overflow:hidden">
-    <transition name="slide-fade" mode="out-in">
+    <transition name="slide-fade" @after-enter="$root.$emit('show-tutor-overlay')" mode="out-in">
     <b-form key="form" id="condiment-form" v-if="createNew">
       <b-link @click="createNew=false">Back</b-link>
       <b-form-group horizontal label="Name" :invalid-feedback="errors.first('name')">
         <b-form-input v-validate="'required'" name="name" :state="getState('name')" v-model="condiment.title"></b-form-input>
       </b-form-group>
       <b-form-group horizontal label="Category" :state="getState('category')" :invalid-feedback="errors.first('category')">
-        <transition name="fade" mode="out-in">
+        <transition name="fade" @after-enter="$root.$emit('show-tutor-overlay')" mode="out-in">
         <b-input-group key="select" v-if="!addCategory">
           <b-form-select v-validate="'required'" name="category" :state="getState('category')" v-model="condiment.condiment_cat_id" :options="formatedCategories"></b-form-select>
           <b-button id="btn-add-condiment-category" slot="append" variant="warning" @click="prepareCategoryInput" >
@@ -109,6 +109,10 @@ export default {
   created() {
     this.fetchCategories()
   },
+  updated() {
+
+    this.$root.$emit('show-tutor-overlay')
+  },
   methods: {
     clearCategory() {
       this.categoryName = ''
@@ -125,16 +129,10 @@ export default {
     prepareCategoryInput() {
       this.addCategory=true;
       this.$store.dispatch('nextStep');
-      setTimeout(() => {
-      this.$root.$emit('show-tutor-overlay')
-      }, 300)
     },
     createNewCondiment() {
       this.createNew=true
       this.$store.dispatch('nextStep')
-      setTimeout(()=> {
-        this.$root.$emit('show-tutor-overlay');
-      }, 700);
     },
     async fetchCategories() {
       const {data} = await axios.get('/api/truck/'+this.truck.id+'/condimentCats')
@@ -163,14 +161,13 @@ export default {
           meal_id: this.meal.id,
           condiment_id: data.data.id
         })
-        this.condiment = {title: '', price: null, condiment_cat_id: null}
-        this.createNew = false
         this.loading = false
-        await swal(data.message);
+        swal(data.message);
         await this.$store.dispatch('meal/fetchMeal', this.meal.id)
         await this.$store.dispatch('trucks/fetchSingle', this.truck.id)
         this.$store.dispatch('nextStep');
-        setTimeout(()=>this.$root.$emit('show-tutor-overlay'), 700);
+        this.createNew = false
+        this.condiment = {title: '', price: null, condiment_cat_id: null}
       }
     },
     async deleteCondiment(condiment) {

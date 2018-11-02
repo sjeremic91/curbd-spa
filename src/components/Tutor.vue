@@ -13,7 +13,15 @@
       <b-progress height="2px" class="popper-progress rounded-0" :value="stepIndex+1" :max="steps.length"></b-progress>
      <div class="popper-footer d-flex flex-row-reverse justify-content-between">
       <b-link class="align-self-center" href="#" size="sm" variant="danger" @click="$store.commit('tutor/endTutor')">Leave Tour</b-link>
-      <b-button v-if="currentStep.hasContinue" @click="nextStep()" :disabled="currentStep.continueDisabled" size="sm" variant="primary">Next Step <i class="fa fa-chevron-right" style="vertical-align:middle"></i></b-button>
+      <b-button v-if="currentStep.hasContinue" @click="nextStep()" :disabled="currentStep.continueDisabled" size="sm" variant="primary">
+        <template v-if="lastStep">
+          Finish
+        </template>
+        <template v-else>
+        Next Step
+        </template>
+        <i class="fa fa-chevron-right" style="vertical-align:middle"></i>
+      </b-button>
      
      </div>
       <!--div class="popper__arrow" x-arrow=""></div-->
@@ -37,6 +45,7 @@ import {mapState, mapGetters} from 'vuex'
 //import Popper from 'popper.js'
 import {disableScroll, enableScroll, scrollIt} from '@/utils'
 import swal from 'sweetalert'
+import axios from 'axios'
 import _ from 'lodash'
 
 export default {
@@ -46,7 +55,10 @@ export default {
       stepIndex: (state) => state.tutor.stepIndex,
       steps: (state) => state.tutor.steps,
     }),
-    ...mapGetters({currentStep : 'tutor/currentStep'})
+    ...mapGetters({
+      currentStep : 'tutor/currentStep',
+      lastStep : 'tutor/lastStep',
+    })
   },
   data() {
     return {
@@ -86,27 +98,29 @@ export default {
         enableScroll();
         if (this.currentStep) {
           let el = document.querySelector(this.currentStep.target)
-          let bodyRect = document.body.getBoundingClientRect()
-          console.log('currentStep:', this.currentStep.target)
-          //scrollIt(el.offsetTop)
-          let top =  el.getBoundingClientRect().top - bodyRect.top - 56 - 8
-          console.log('top', top);
-          window.scrollTo({top:top, behavior: 'instant'})
-          let modal = document.querySelector('.modal.show')
-          if (modal) {
-            top =  el.getBoundingClientRect().top - modal.getBoundingClientRect().top -  8
-            modal.scrollTo({top:top, behavior: 'instant'})
-            if (!modal.onscroll)  {
+          if (el) {
+            let bodyRect = document.body.getBoundingClientRect()
+            console.log('currentStep:', this.currentStep.target)
+            //scrollIt(el.offsetTop)
+            let top =  el.getBoundingClientRect().top - bodyRect.top - 56 - 8
+            console.log('top', top);
+            window.scrollTo({top:top, behavior: 'instant'})
+            let modal = document.querySelector('.modal.show')
+            if (modal) {
+              top =  el.getBoundingClientRect().top - modal.getBoundingClientRect().top -  8
+              modal.scrollTo({top:top, behavior: 'instant'})
+              if (!modal.onscroll)  {
 
-              modal.onscroll = () => this.showCurrentStep();
+                modal.onscroll = () => this.showCurrentStep();
 
+              }
             }
-          }
 
-          if (this.currentStep.scrollDisabled)
-            disableScroll();
-          else
-            enableScroll();
+            if (this.currentStep.scrollDisabled)
+              disableScroll();
+            else
+              enableScroll();
+          }
         }
         this.showCurrentStep();
       })
@@ -117,6 +131,9 @@ export default {
       await this.$store.dispatch('nextStep')
       this.$root.$emit('next-step')
       this.$root.$emit('show-tutor-overlay')
+      if (this.$store.getters['tutor/lastStep']) {
+        axios.post('api/vendors/'+this.$store.state.auth.user.id+'/finish-tutorial')
+      }
       //if (this.isMobile()) {
      // }
     },
